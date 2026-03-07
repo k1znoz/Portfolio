@@ -1,0 +1,66 @@
+@import url('https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@400;500;700;800&family=Space+Mono:wght@400;700&display=swap');
+
+:root {
+  --container-7xl: 96rem;
+
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  min-width: 320px;
+  min-height: 100%;
+}
+
+body {
+  font-family: 'Bricolage Grotesque', 'Segoe UI', sans-serif;
+  --page-bg: linear-gradient(140deg, #fbf4ea 0%, #f1e0cf 48%, #e7d0bd 100%);
+  background: var(--page-bg);
+  transition: background 700ms ease;
+}
+
+body[data-theme='editorial'] {
+  --page-bg: linear-gradient(140deg, #fbf4ea 0%, #f1e0cf 48%, #e7d0bd 100%);
+}
+
+body[data-theme='sunset'] {
+  --page-bg: linear-gradient(145deg, #dfb89c 0%, #b47f63 44%, #744f3f 100%);
+}
+
+body[data-theme='neon'] {
+  --page-bg: linear-gradient(145deg, #04060c 0%, #0b111b 55%, #121a27 100%);
+}
+
+#app {
+  min-height: 100vh;
+}
+
+a {
+  color: inherit;
+}
+
+h1,
+h2,
+h3,
+p {
+  margin: 0;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}

@@ -1,0 +1,37 @@
+.metrics-panel {
+  grid-column: 9 / span 4;
+  display: grid;
+  gap: 0.8rem;
+}
+
+.metric-card {
+  border: 1px solid color-mix(in srgb, var(--outline), transparent 10%);
+  border-radius: 14px;
+  background: var(--surface-strong);
+  padding: 0.8rem 1rem;
+}
+
+.metric-value {
+  font-family: 'Space Mono', monospace;
+  font-size: clamp(1.6rem, 3vw, 2.2rem);
+  color: var(--primary);
+  font-weight: 700;
+  margin-bottom: 0.3rem;
+}
+
+.metric-card p:last-child {
+  color: var(--muted);
+}
+
+@media (max-width: 1024px) {
+  .metrics-panel {
+    grid-column: 1 / -1;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 700px) {
+  .metrics-panel {
+    grid-template-columns: 1fr;
+  }
+}

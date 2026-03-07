@@ -1,0 +1,83 @@
+.portfolio-shell {
+  --palette-light-ember: #b66f59;
+  --palette-light-brass: #bea176;
+  --palette-dark-copper: #ffad86;
+  --palette-dark-steel: #c7ab92;
+
+  --bg: #f5ebdf;
+  --bg-deep: #ddc5b0;
+  --surface: rgba(252, 245, 238, 0.9);
+  --surface-strong: rgba(255, 249, 243, 0.95);
+  --text: #3b2e27;
+  --muted: #7a6357;
+  --primary: var(--palette-light-ember);
+  --accent: var(--palette-light-brass);
+  --outline: rgba(76, 52, 42, 0.16);
+  --shadow: 0 14px 36px rgba(52, 35, 29, 0.13);
+
+  color: var(--text);
+  background:
+    radial-gradient(
+      circle at 10% 15%,
+      color-mix(in srgb, var(--accent), white 70%) 0%,
+      transparent 40%
+    ),
+    radial-gradient(
+      circle at 80% 90%,
+      color-mix(in srgb, var(--primary), white 70%) 0%,
+      transparent 42%
+    ),
+    linear-gradient(135deg, var(--bg), var(--bg-deep));
+  transition:
+    background 700ms ease,
+    color 500ms ease;
+}
+
+.theme-sunset {
+  --bg: #d6ae92;
+  --bg-deep: #8c624c;
+  --surface: rgba(75, 45, 33, 0.4);
+  --surface-strong: rgba(99, 60, 43, 0.56);
+  --text: #f9eee5;
+  --muted: #e7c8b5;
+  --primary: var(--palette-light-brass);
+  --accent: var(--palette-dark-copper);
+  --outline: rgba(243, 196, 165, 0.28);
+  --shadow: 0 16px 35px rgba(47, 23, 16, 0.33);
+}
+
+.theme-neon {
+  --bg: #140f0c;
+  --bg-deep: #261b15;
+  --surface: rgba(34, 24, 19, 0.86);
+  --surface-strong: rgba(43, 31, 24, 0.94);
+  --text: #f8efe8;
+  --muted: #cfb6a3;
+  --primary: var(--palette-dark-copper);
+  --accent: var(--palette-dark-steel);
+  --outline: rgba(196, 156, 127, 0.34);
+  --shadow: 0 18px 36px rgba(0, 0, 0, 0.54);
+}
+
+.panel {
+  position: relative;
+  z-index: 1;
+  background: var(--surface);
+  border: 1px solid var(--outline);
+  box-shadow: var(--shadow);
+  backdrop-filter: blur(9px);
+  border-radius: 20px;
+  padding: clamp(1rem, 2.2vw, 2rem);
+  transition:
+    background 700ms ease,
+    border-color 700ms ease,
+    transform 500ms ease;
+}
+
+.kicker {
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  font-family: 'Space Mono', monospace;
+  color: var(--primary);
+  font-size: 0.78rem;
+}

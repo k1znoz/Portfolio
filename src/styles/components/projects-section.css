@@ -1,0 +1,114 @@
+.projects-section {
+  grid-column: 1 / span 9;
+}
+
+.section-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+}
+
+.section-head a {
+  text-decoration: none;
+  color: var(--primary);
+  font-family: 'Space Mono', monospace;
+  font-size: 0.82rem;
+}
+
+.project-list {
+  display: grid;
+  gap: 0.8rem;
+  margin-top: 1rem;
+}
+
+.project-row {
+  display: grid;
+  grid-template-columns: 82px 1fr;
+  gap: 0.9rem;
+  border: 1px solid color-mix(in srgb, var(--outline), transparent 18%);
+  border-radius: 16px;
+  background: var(--surface-strong);
+  padding: 0.9rem;
+}
+
+.project-date {
+  font-family: 'Space Mono', monospace;
+  color: var(--primary);
+  font-weight: 700;
+  font-size: 0.82rem;
+  align-self: start;
+  letter-spacing: 0.04em;
+}
+
+.project-type {
+  margin-bottom: 0.35rem;
+  color: var(--primary);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  font-size: 0.75rem;
+  font-family: 'Space Mono', monospace;
+}
+
+.project-main h3 {
+  margin-bottom: 0.45rem;
+}
+
+.project-main p {
+  color: var(--muted);
+}
+
+.project-links {
+  margin-top: 0.9rem;
+  display: flex;
+  gap: 0.75rem;
+}
+
+.project-links a {
+  text-decoration: none;
+  font-family: 'Space Mono', monospace;
+  font-size: 0.8rem;
+}
+
+.preview-toggle {
+  border: 1px solid color-mix(in srgb, var(--outline), transparent 10%);
+  border-radius: 999px;
+  background: var(--surface-strong);
+  color: var(--text);
+  padding: 0.28rem 0.65rem;
+  font-family: 'Space Mono', monospace;
+  font-size: 0.75rem;
+  cursor: pointer;
+}
+
+.project-preview-wrap {
+  margin-top: 0.85rem;
+}
+
+.project-preview {
+  width: 100%;
+  border: 1px solid color-mix(in srgb, var(--outline), transparent 12%);
+  border-radius: 12px;
+  height: clamp(260px, 34vw, 430px);
+  background: color-mix(in srgb, var(--bg), #000 5%);
+}
+
+.preview-note {
+  margin-top: 0.45rem;
+  color: var(--muted);
+  font-size: 0.82rem;
+}
+
+.preview-note a {
+  text-decoration: underline;
+}
+
+@media (max-width: 1024px) {
+  .projects-section {
+    grid-column: 1 / -1;
+  }
+
+  .project-row {
+    grid-template-columns: 1fr;
+  }
+}

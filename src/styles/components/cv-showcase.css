@@ -1,0 +1,132 @@
+.cv-showcase {
+  grid-column: 1 / -1;
+  display: grid;
+  grid-template-columns: 1.2fr 1fr;
+  gap: 1rem;
+}
+
+.cv-showcase__copy h2 {
+  margin: 0.65rem 0 0.75rem;
+  line-height: 1.06;
+}
+
+.cv-showcase__copy p {
+  color: var(--muted);
+  max-width: 56ch;
+}
+
+.cv-showcase__actions {
+  margin-top: 1rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+}
+
+.cv-btn {
+  border-radius: 999px;
+  padding: 0.55rem 0.92rem;
+  text-decoration: none;
+  font-family: 'Space Mono', monospace;
+  font-size: 0.8rem;
+  border: 1px solid color-mix(in srgb, var(--outline), transparent 10%);
+}
+
+.cv-btn--primary {
+  border: none;
+  color: #fff;
+  cursor: pointer;
+  background: linear-gradient(120deg, var(--primary), var(--accent));
+}
+
+.cv-btn--ghost {
+  color: var(--text);
+  background: var(--surface-strong);
+}
+
+.cv-card {
+  position: relative;
+  text-align: left;
+  cursor: pointer;
+  border-radius: 18px;
+  appearance: none;
+  border: 1px solid color-mix(in srgb, var(--outline), transparent 5%);
+  background: linear-gradient(
+    145deg,
+    color-mix(in srgb, var(--surface-strong), #fff 15%),
+    var(--surface)
+  );
+  box-shadow: 0 14px 30px color-mix(in srgb, var(--shadow), transparent 35%);
+  padding: 0.85rem;
+  text-decoration: none;
+  overflow: hidden;
+}
+
+.cv-card::after {
+  content: '';
+  position: absolute;
+  inset: -35% auto auto 58%;
+  width: 16rem;
+  height: 16rem;
+  border-radius: 50%;
+  background: radial-gradient(
+    circle,
+    color-mix(in srgb, var(--accent), #fff 50%) 0%,
+    transparent 64%
+  );
+  opacity: 0.45;
+  pointer-events: none;
+}
+
+.cv-card__tag {
+  display: inline-block;
+  padding: 0.24rem 0.58rem;
+  border-radius: 999px;
+  border: 1px solid color-mix(in srgb, var(--outline), transparent 15%);
+  font-family: 'Space Mono', monospace;
+  font-size: 0.72rem;
+  color: var(--muted);
+  background: var(--surface-strong);
+}
+
+.cv-card__sheet {
+  margin-top: 0.7rem;
+  border-radius: 14px;
+  border: 1px solid color-mix(in srgb, var(--outline), transparent 10%);
+  background: color-mix(in srgb, var(--surface-strong), #fff 18%);
+  min-height: 170px;
+  padding: 0.78rem;
+  display: grid;
+  gap: 0.4rem;
+}
+
+.cv-card__sheet span {
+  height: 0.56rem;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--primary), #fff 72%);
+}
+
+.cv-card__sheet span:nth-child(2) {
+  width: 75%;
+}
+
+.cv-card__sheet span:nth-child(3) {
+  width: 88%;
+}
+
+.cv-card__sheet span:nth-child(4) {
+  width: 60%;
+}
+
+.cv-card__sheet span:nth-child(5) {
+  width: 82%;
+}
+
+.cv-card__sheet span:nth-child(6) {
+  width: 70%;
+}
+
+@media (max-width: 1024px) {
+  .cv-showcase {
+    grid-template-columns: 1fr;
+  }
+}

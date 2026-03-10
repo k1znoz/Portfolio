@@ -6,6 +6,33 @@ This template should help get you started developing with Svelte in Vite.
 
 [VS Code](https://code.visualstudio.com/) + [Svelte](https://marketplace.visualstudio.com/items?itemName=svelte.svelte-vscode).
 
+## Security Headers
+
+This project now sets anti-embedding and cross-origin isolation headers in Vite
+`dev` and `preview` modes via `vite.config.js`.
+
+For production, static assets do not emit headers by themselves. Configure your
+hosting platform or reverse proxy to return these headers:
+
+- `X-Frame-Options: DENY`
+- `Content-Security-Policy: frame-ancestors 'none'`
+- `Cross-Origin-Opener-Policy: same-origin`
+- `Cross-Origin-Embedder-Policy: require-corp`
+- `Cross-Origin-Resource-Policy: same-origin`
+
+Example (Nginx):
+
+```nginx
+add_header X-Frame-Options "DENY" always;
+add_header Content-Security-Policy "frame-ancestors 'none'" always;
+add_header Cross-Origin-Opener-Policy "same-origin" always;
+add_header Cross-Origin-Embedder-Policy "require-corp" always;
+add_header Cross-Origin-Resource-Policy "same-origin" always;
+```
+
+Note: `Cross-Origin-Embedder-Policy: require-corp` can block third-party assets
+that do not send compatible CORS/CORP headers.
+
 ## Need an official Svelte framework?
 
 Check out [SvelteKit](https://github.com/sveltejs/kit#readme), which is also powered by Vite. Deploy anywhere with its serverless-first approach and adapt to various platforms, with out of the box support for TypeScript, SCSS, and Less, and easily-added support for mdsvex, GraphQL, PostCSS, Tailwind CSS, and more.

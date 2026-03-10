@@ -144,7 +144,7 @@ export const cvWeb = {
   experiences: [
     {
       period: 'Depuis 2023',
-      company: 'Grawn - Paris',
+      company: 'Grow - Paris',
       role: 'Stage (1 mois)',
       points: [
         "Creation d'interfaces web responsives, du maquettage au developpement dynamique.",

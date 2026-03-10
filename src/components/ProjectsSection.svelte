@@ -15,7 +15,11 @@
 
   function getPreviewLabel(project) {
     if (!project.demo) return 'Apercu'
-    return project.demo.mode === 'sandbox' ? 'Demo sandbox' : 'Apercu live'
+    return project.demo.mode === 'sandbox' ? 'Ouvrir sandbox' : 'Apercu live'
+  }
+
+  function canEmbedDemo(project) {
+    return Boolean(project.demo && project.demo.mode === 'live')
   }
 
   function cinematicPreview(node, { duration = 540 } = {}) {
@@ -72,16 +76,19 @@
 
           {#if activePreview === project.name && project.demo}
             <div class="project-preview-wrap" transition:cinematicPreview>
-              <iframe
-                class="project-preview"
-                src={project.demo.url}
-                title={`Apercu de ${project.name}`}
-                loading="lazy"
-                referrerpolicy="no-referrer"
-              ></iframe>
+              {#if canEmbedDemo(project)}
+                <iframe
+                  class="project-preview"
+                  src={project.demo.url}
+                  title={`Apercu de ${project.name}`}
+                  loading="lazy"
+                  referrerpolicy="no-referrer"
+                ></iframe>
+              {/if}
               <p class="preview-note">
                 {#if project.demo.mode === 'sandbox'}
-                  Apercu via sandbox pour un projet non deploye publiquement.
+                  Pour eviter les alertes cookies tierces du sandbox, la demo s'ouvre uniquement dans
+                  un nouvel onglet.
                 {:else}
                   Si l'aperçu ne s'affiche pas, le site bloque l'embed.
                 {/if}

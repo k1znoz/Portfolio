@@ -1,4 +1,8 @@
 <script>
+  import { cubicOut } from 'svelte/easing'
+
+  import { chargeCta, panelSpotlight, tiltCard } from '../lib/premium-interactions'
+  import { titleReveal } from '../lib/title-reveal'
   import '../styles/components/projects-section.css'
 
   export let projects
@@ -13,17 +17,36 @@
     if (!project.demo) return 'Apercu'
     return project.demo.mode === 'sandbox' ? 'Demo sandbox' : 'Apercu live'
   }
+
+  function cinematicPreview(node, { duration = 540 } = {}) {
+    return {
+      duration,
+      easing: cubicOut,
+      css: (t, u) => {
+        const blur = (1 - t) * 7
+        const clipTop = u * 18
+        const clipBottom = u * 6
+
+        return `
+          opacity: ${t};
+          transform: translateY(${u * 12}px) scale(${0.985 + 0.015 * t});
+          filter: blur(${blur}px) saturate(${0.85 + t * 0.2});
+          clip-path: inset(${clipTop}% 0 ${clipBottom}% 0 round 12px);
+        `
+      },
+    }
+  }
 </script>
 
-<section id="projects" class="panel projects-section">
+<section id="projects" class="panel projects-section" use:panelSpotlight>
   <div class="section-head">
-    <h2>Selection de projets</h2>
+    <h2 use:titleReveal>Selection de projets</h2>
     <a href="/projects">Voir le dossier complet</a>
   </div>
 
   <div class="project-list">
     {#each projects as project (project.name)}
-      <article class="project-row">
+      <article class="project-row" use:tiltCard={{ intensity: 4.8, scale: 1.007 }}>
         <p class="project-date">{project.date}</p>
 
         <div class="project-main">
@@ -40,6 +63,7 @@
               type="button"
               class="preview-toggle"
               aria-expanded={activePreview === project.name}
+              use:chargeCta
               on:click={() => togglePreview(project.name)}
             >
               {activePreview === project.name ? 'Masquer apercu' : getPreviewLabel(project)}
@@ -47,7 +71,7 @@
           </div>
 
           {#if activePreview === project.name && project.demo}
-            <div class="project-preview-wrap">
+            <div class="project-preview-wrap" transition:cinematicPreview>
               <iframe
                 class="project-preview"
                 src={project.demo.url}

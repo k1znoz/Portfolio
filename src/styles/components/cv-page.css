@@ -9,6 +9,7 @@
   line-height: 0.98;
   font-size: clamp(1.7rem, 4vw, 3rem);
   max-width: 18ch;
+  view-transition-name: cv-headline;
 }
 
 .cv-page__head p {
@@ -41,6 +42,10 @@
   padding: 0.5rem 0.82rem;
   font-family: 'Space Mono', monospace;
   font-size: 0.78rem;
+}
+
+.cv-page__actions .cv-page-btn:first-child {
+  view-transition-name: cv-cta;
 }
 
 .cv-page-btn--primary {
@@ -128,6 +133,11 @@
 .cv-aside-media--portrait img {
   aspect-ratio: 4 / 5;
   filter: grayscale(1) contrast(1.22) brightness(1.04);
+  view-transition-name: cv-sheet;
+}
+
+.cv-aside-media--portrait {
+  view-transition-name: cv-identity;
 }
 
 .cv-aside-media--knife img {
@@ -140,6 +150,8 @@
   background: var(--surface-strong);
   padding: 0.9rem;
   max-width: 100%;
+  transform-style: preserve-3d;
+  will-change: transform;
 }
 
 .cv-aside .cv-card-block {
@@ -204,6 +216,40 @@
   font-family: 'Space Mono', monospace;
   font-size: 0.72rem;
   background: color-mix(in srgb, var(--surface), #fff 20%);
+  position: relative;
+  --constellation: 0;
+  box-shadow: 0 0 calc(var(--constellation) * 16px)
+    color-mix(in srgb, var(--accent), transparent calc(92% - (var(--constellation) * 26%)));
+  transition: box-shadow 160ms ease;
+}
+
+.cv-skill-chip::after {
+  content: '';
+  position: absolute;
+  right: -0.38rem;
+  top: 50%;
+  width: 0.58rem;
+  height: 2px;
+  transform: translateY(-50%) scaleX(0);
+  transform-origin: left center;
+  background: linear-gradient(
+    90deg,
+    color-mix(in srgb, var(--accent), transparent 35%),
+    transparent
+  );
+  opacity: 0;
+  transition:
+    transform 160ms ease,
+    opacity 160ms ease;
+}
+
+.cv-skill-chip.is-active {
+  box-shadow: 0 0 16px color-mix(in srgb, var(--accent), transparent 52%);
+}
+
+.cv-skill-chip.is-near::after {
+  opacity: 0.9;
+  transform: translateY(-50%) scaleX(1);
 }
 
 .cv-skill-icon {
@@ -214,15 +260,80 @@
 }
 
 .cv-timeline {
+  position: relative;
   display: grid;
   gap: 0.75rem;
+  padding-left: 1.1rem;
+  --timeline-draw-duration: 880ms;
+  --timeline-node-duration: 520ms;
+  --timeline-glow: color-mix(in srgb, var(--accent), transparent 72%);
+}
+
+.cv-reveal--editorial .cv-timeline {
+  --timeline-draw-duration: 980ms;
+  --timeline-node-duration: 560ms;
+}
+
+.cv-reveal--sunset .cv-timeline {
+  --timeline-draw-duration: 920ms;
+  --timeline-node-duration: 540ms;
+}
+
+.cv-reveal--neon .cv-timeline {
+  --timeline-draw-duration: 760ms;
+  --timeline-node-duration: 480ms;
+  --timeline-glow: color-mix(in srgb, var(--accent), transparent 60%);
+}
+
+.cv-timeline::before {
+  content: '';
+  position: absolute;
+  left: 0.36rem;
+  top: 0.18rem;
+  bottom: 0.18rem;
+  width: 2px;
+  border-radius: 999px;
+  background: linear-gradient(
+    to bottom,
+    color-mix(in srgb, var(--accent), transparent 18%),
+    color-mix(in srgb, var(--primary), transparent 34%)
+  );
+  transform: scaleY(0);
+  transform-origin: top;
+  opacity: 0.75;
+  box-shadow: 0 0 0 0 transparent;
+}
+
+.cv-card-block.reveal-block.is-visible .cv-timeline::before {
+  animation:
+    cv-line-draw var(--timeline-draw-duration) cubic-bezier(0.2, 0.86, 0.24, 1) forwards,
+    cv-line-glow calc(var(--timeline-draw-duration) + 220ms) ease forwards;
 }
 
 .cv-timeline article {
+  position: relative;
   border: 1px solid color-mix(in srgb, var(--outline), transparent 10%);
   border-radius: 12px;
   background: color-mix(in srgb, var(--surface), #fff 12%);
   padding: 0.75rem;
+}
+
+.cv-timeline article::before {
+  content: '';
+  position: absolute;
+  left: -0.98rem;
+  top: 0.92rem;
+  width: 0.62rem;
+  height: 0.62rem;
+  border-radius: 50%;
+  border: 2px solid color-mix(in srgb, var(--accent), transparent 26%);
+  background: color-mix(in srgb, var(--surface-strong), #fff 18%);
+  box-shadow: 0 0 0 0 color-mix(in srgb, var(--accent), transparent 65%);
+}
+
+.cv-card-block.reveal-block.is-visible .cv-timeline article::before {
+  animation: cv-node-pop var(--timeline-node-duration) cubic-bezier(0.16, 0.92, 0.24, 1) forwards;
+  animation-delay: calc(var(--reveal-order, 0) * 90ms);
 }
 
 .cv-timeline h3 {
@@ -330,6 +441,39 @@
   }
 }
 
+@keyframes cv-line-draw {
+  to {
+    transform: scaleY(1);
+  }
+}
+
+@keyframes cv-node-pop {
+  0% {
+    transform: scale(0.4);
+    box-shadow: 0 0 0 0 color-mix(in srgb, var(--accent), transparent 35%);
+  }
+  70% {
+    transform: scale(1.08);
+    box-shadow: 0 0 0 8px color-mix(in srgb, var(--accent), transparent 86%);
+  }
+  100% {
+    transform: scale(1);
+    box-shadow: 0 0 0 0 color-mix(in srgb, var(--accent), transparent 100%);
+  }
+}
+
+@keyframes cv-line-glow {
+  0% {
+    box-shadow: 0 0 0 0 transparent;
+  }
+  60% {
+    box-shadow: 0 0 12px 0 var(--timeline-glow);
+  }
+  100% {
+    box-shadow: 0 0 6px 0 color-mix(in srgb, var(--timeline-glow), transparent 55%);
+  }
+}
+
 @media (max-width: 1024px) {
   .cv-reveal {
     grid-template-columns: 1fr;
@@ -345,5 +489,11 @@
     opacity: 1;
     transform: none;
     animation: none !important;
+  }
+
+  .cv-timeline::before,
+  .cv-timeline article::before {
+    animation: none !important;
+    transform: none;
   }
 }

@@ -8,6 +8,7 @@
 .cv-showcase__copy h2 {
   margin: 0.65rem 0 0.75rem;
   line-height: 1.06;
+  view-transition-name: cv-headline;
 }
 
 .cv-showcase__copy p {
@@ -36,6 +37,7 @@
   color: #fff;
   cursor: pointer;
   background: linear-gradient(120deg, var(--primary), var(--accent));
+  view-transition-name: cv-cta;
 }
 
 .cv-btn--ghost {
@@ -59,6 +61,7 @@
   padding: 0.85rem;
   text-decoration: none;
   overflow: hidden;
+  view-transition-name: cv-identity;
 }
 
 .cv-card::after {
@@ -97,6 +100,7 @@
   padding: 0.78rem;
   display: grid;
   gap: 0.4rem;
+  view-transition-name: cv-sheet;
 }
 
 .cv-card__sheet span {

@@ -1,4 +1,6 @@
 <script>
+  import { chargeCta } from '../lib/premium-interactions'
+  import { titleReveal } from '../lib/title-reveal'
   import '../styles/components/contact-section.css'
 
   export let contactLinks
@@ -13,7 +15,7 @@
 <section id="contact" class="panel contact-section">
   <div class="contact-section__intro">
     <p class="kicker">Me contacter</p>
-    <h2>Transformons une idee ambitieuse en produit concret.</h2>
+    <h2 use:titleReveal>Transformons une idee ambitieuse en produit concret.</h2>
     <p>Discutons de ton besoin, de la deadline et du niveau de finition attendu.</p>
   </div>
 
@@ -33,7 +35,7 @@
       <textarea name="message" rows="4" placeholder="Parle-moi de ton projet" required></textarea>
     </label>
 
-    <button type="submit">Envoyer</button>
+    <button type="submit" use:chargeCta>Envoyer</button>
 
     {#if isSent}
       <p class="contact-feedback" role="status" aria-live="polite">

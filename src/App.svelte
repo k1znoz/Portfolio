@@ -42,6 +42,31 @@
     ...cvWeb,
     skills: [...cvWeb.skills],
   }
+  let scrollProgress = 0
+  let parallaxOffset = 0
+  let cursorX = 50
+  let cursorY = 25
+
+  function prefersReducedMotion() {
+    return typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches
+  }
+
+  function runWithViewTransition(update, types = []) {
+    if (typeof document === 'undefined' || prefersReducedMotion()) {
+      update()
+      return
+    }
+
+    if (!document.startViewTransition) {
+      update()
+      return
+    }
+
+    document.startViewTransition({
+      update,
+      types,
+    })
+  }
 
   $: currentTheme = themes[themeIndex]
   $: isCvPage = currentPath === '/cv'
@@ -131,6 +156,8 @@
   onMount(() => {
     const normalized = window.location.pathname === '/cv' ? '/cv' : '/'
     currentPath = normalized
+    const reduceMotionQuery = window.matchMedia('(prefers-reduced-motion: reduce)')
+    let rafId = 0
 
     refreshLanguageOrder()
 
@@ -142,27 +169,99 @@
       currentPath = window.location.pathname === '/cv' ? '/cv' : '/'
     }
 
+    const updateAmbientMotion = () => {
+      rafId = 0
+
+      const maxScroll = Math.max(
+        document.documentElement.scrollHeight - window.innerHeight,
+        1
+      )
+      const nextProgress = (window.scrollY / maxScroll) * 100
+
+      scrollProgress = Number.isFinite(nextProgress) ? Math.max(0, Math.min(100, nextProgress)) : 0
+      parallaxOffset = reduceMotionQuery.matches ? 0 : Math.min(window.scrollY * 0.08, 56)
+    }
+
+    const requestAmbientMotionUpdate = () => {
+      if (rafId) {
+        return
+      }
+
+      rafId = window.requestAnimationFrame(updateAmbientMotion)
+    }
+
+    const onPointerMove = (event) => {
+      if (reduceMotionQuery.matches) {
+        cursorX = 50
+        cursorY = 25
+        return
+      }
+
+      cursorX = (event.clientX / window.innerWidth) * 100
+      cursorY = (event.clientY / window.innerHeight) * 100
+    }
+
+    const onMotionPreferenceChange = () => {
+      if (reduceMotionQuery.matches) {
+        parallaxOffset = 0
+        cursorX = 50
+        cursorY = 25
+      }
+      requestAmbientMotionUpdate()
+    }
+
+    updateAmbientMotion()
+
     window.addEventListener('popstate', onPopState)
-    return () => window.removeEventListener('popstate', onPopState)
+    window.addEventListener('scroll', requestAmbientMotionUpdate, { passive: true })
+    window.addEventListener('resize', requestAmbientMotionUpdate)
+    window.addEventListener('pointermove', onPointerMove, { passive: true })
+    reduceMotionQuery.addEventListener('change', onMotionPreferenceChange)
+
+    return () => {
+      window.removeEventListener('popstate', onPopState)
+      window.removeEventListener('scroll', requestAmbientMotionUpdate)
+      window.removeEventListener('resize', requestAmbientMotionUpdate)
+      window.removeEventListener('pointermove', onPointerMove)
+      reduceMotionQuery.removeEventListener('change', onMotionPreferenceChange)
+      if (rafId) {
+        window.cancelAnimationFrame(rafId)
+      }
+    }
   })
 
   function navigateTo(path) {
     const normalized = path === '/cv' ? '/cv' : '/'
 
-    if (typeof window !== 'undefined' && window.location.pathname !== normalized) {
-      window.history.pushState({}, '', normalized)
+    if (currentPath === normalized) {
+      return
     }
 
-    currentPath = normalized
+    runWithViewTransition(
+      () => {
+        if (typeof window !== 'undefined' && window.location.pathname !== normalized) {
+          window.history.pushState({}, '', normalized)
+        }
+
+        currentPath = normalized
+      },
+      ['route']
+    )
+
     window.scrollTo({ top: 0, behavior: 'smooth' })
   }
 
   function nextTheme() {
     if (isSwitching) return
 
-    isSwitching = true
-    themeIndex = (themeIndex - 1 + themes.length) % themes.length
-    switchCount += 1
+    runWithViewTransition(
+      () => {
+        isSwitching = true
+        themeIndex = (themeIndex - 1 + themes.length) % themes.length
+        switchCount += 1
+      },
+      ['theme']
+    )
 
     setTimeout(() => {
       isSwitching = false
@@ -175,9 +274,14 @@
     const targetIndex = themes.findIndex((theme) => theme.id === themeId)
     if (targetIndex === -1 || targetIndex === themeIndex) return
 
-    isSwitching = true
-    themeIndex = targetIndex
-    switchCount += 1
+    runWithViewTransition(
+      () => {
+        isSwitching = true
+        themeIndex = targetIndex
+        switchCount += 1
+      },
+      ['theme']
+    )
 
     setTimeout(() => {
       isSwitching = false
@@ -187,8 +291,9 @@
 
 <main
   class={`portfolio-shell theme-${currentTheme.id} ${isSwitching ? 'is-switching' : ''}`}
-  style={`--drift-x:${motion.x};--drift-y:${motion.y};--drift-r:${motion.r};`}
+  style={`--drift-x:${motion.x};--drift-y:${motion.y};--drift-r:${motion.r};--scroll-progress:${scrollProgress}%;--parallax-offset:${parallaxOffset}px;--cursor-x:${cursorX}%;--cursor-y:${cursorY}%;`}
 >
+  <div class="scroll-progress" aria-hidden="true"></div>
   <div class="ambience-glow" aria-hidden="true"></div>
 
   <div class="portfolio-inner">

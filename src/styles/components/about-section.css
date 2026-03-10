@@ -23,6 +23,8 @@
   border-radius: 14px;
   background: var(--surface-strong);
   padding: 0.85rem;
+  transform-style: preserve-3d;
+  will-change: transform;
 }
 
 .about-card h3 {

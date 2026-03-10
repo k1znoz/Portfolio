@@ -1,5 +1,8 @@
 <script>
   import { onDestroy, tick } from 'svelte'
+
+  import { constellationSkills, tiltCard } from '../lib/premium-interactions'
+  import { titleReveal } from '../lib/title-reveal'
   import '../styles/components/cv-page.css'
 
   export let cvProfile
@@ -84,7 +87,7 @@
 >
   <div class="cv-page__head">
     <p class="kicker">CV Experience</p>
-    <h1 id="cv-page-title">{cvWeb.fullName} · {cvWeb.title}</h1>
+    <h1 id="cv-page-title" use:titleReveal>{cvWeb.fullName} · {cvWeb.title}</h1>
     <p class="cv-page__subtitle">{cvWeb.subtitle}</p>
     <p>
       {cvWeb.pitch}
@@ -109,7 +112,12 @@
         </figure>
 
         <div class="cv-aside-block cv-aside-block--details">
-          <section class="cv-card-block reveal-block" data-reveal style="--reveal-order: 1">
+          <section
+            class="cv-card-block reveal-block"
+            data-reveal
+            style="--reveal-order: 1"
+            use:tiltCard={{ intensity: 3.4, scale: 1.006 }}
+          >
             <h2>Contact</h2>
             <ul>
               {#each cvWeb.contact as item}
@@ -118,9 +126,14 @@
             </ul>
           </section>
 
-          <section class="cv-card-block reveal-block" data-reveal style="--reveal-order: 2">
+          <section
+            class="cv-card-block reveal-block"
+            data-reveal
+            style="--reveal-order: 2"
+            use:tiltCard={{ intensity: 3.8, scale: 1.007 }}
+          >
             <h2>Competences</h2>
-            <div class="cv-skill-grid">
+            <div class="cv-skill-grid" use:constellationSkills>
               {#each cvWeb.skills as skill}
                 <span class="cv-skill-chip">
                   {#if skillIcons[skill]}
@@ -132,7 +145,12 @@
             </div>
           </section>
 
-          <section class="cv-card-block reveal-block" data-reveal style="--reveal-order: 3">
+          <section
+            class="cv-card-block reveal-block"
+            data-reveal
+            style="--reveal-order: 3"
+            use:tiltCard={{ intensity: 3.2, scale: 1.005 }}
+          >
             <h2>Centres d'interet</h2>
             <ul>
               {#each cvWeb.interests as interest}
@@ -152,7 +170,12 @@
       </aside>
 
       <div class="cv-main">
-        <section class="cv-card-block reveal-block" data-reveal style="--reveal-order: 0">
+        <section
+          class="cv-card-block reveal-block"
+          data-reveal
+          style="--reveal-order: 0"
+          use:tiltCard={{ intensity: 2.8, scale: 1.004 }}
+        >
           <h2>Experiences</h2>
           <div class="cv-timeline">
             {#each cvWeb.experiences as experience, index}
@@ -170,7 +193,12 @@
           </div>
         </section>
 
-        <section class="cv-card-block reveal-block" data-reveal style="--reveal-order: 2">
+        <section
+          class="cv-card-block reveal-block"
+          data-reveal
+          style="--reveal-order: 2"
+          use:tiltCard={{ intensity: 2.6, scale: 1.004 }}
+        >
           <h2>Formations</h2>
           <div class="cv-education">
             {#each cvWeb.education as edu, index}

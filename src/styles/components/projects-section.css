@@ -1,5 +1,6 @@
 .projects-section {
   grid-column: 1 / span 9;
+  transform-style: preserve-3d;
 }
 
 .section-head {
@@ -23,6 +24,7 @@
 }
 
 .project-row {
+  position: relative;
   display: grid;
   grid-template-columns: 82px 1fr;
   gap: 0.9rem;
@@ -30,6 +32,39 @@
   border-radius: 16px;
   background: var(--surface-strong);
   padding: 0.9rem;
+  will-change: transform, filter;
+  overflow: hidden;
+  backface-visibility: hidden;
+}
+
+.project-row::after {
+  content: '';
+  position: absolute;
+  inset: -2px;
+  background: linear-gradient(
+    115deg,
+    transparent 18%,
+    color-mix(in srgb, var(--accent), transparent 72%) 46%,
+    transparent 72%
+  );
+  transform: translateX(-115%);
+  opacity: 0;
+  pointer-events: none;
+}
+
+.project-row:hover::after,
+.project-row:focus-within::after {
+  opacity: 1;
+  transform: translateX(115%);
+  transition:
+    transform 620ms cubic-bezier(0.22, 0.84, 0.24, 1),
+    opacity 180ms ease;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .project-row::after {
+    display: none;
+  }
 }
 
 .project-date {
@@ -83,6 +118,11 @@
 
 .project-preview-wrap {
   margin-top: 0.85rem;
+  border-radius: 12px;
+  overflow: hidden;
+  border: 1px solid color-mix(in srgb, var(--outline), transparent 12%);
+  background: color-mix(in srgb, var(--surface), #000 4%);
+  box-shadow: 0 18px 30px color-mix(in srgb, var(--shadow), transparent 55%);
 }
 
 .project-preview {

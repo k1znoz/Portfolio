@@ -7,6 +7,18 @@
   padding-block: clamp(0.75rem, 1.2vw, 1.2rem);
 }
 
+.scroll-progress {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 3px;
+  width: var(--scroll-progress, 0%);
+  z-index: 30;
+  background: linear-gradient(90deg, var(--primary), var(--accent));
+  box-shadow: 0 0 14px color-mix(in srgb, var(--accent), transparent 40%);
+  transition: width 90ms linear;
+}
+
 .portfolio-inner {
   width: 100%;
   max-width: var(--container-7xl);
@@ -52,7 +64,16 @@
   filter: blur(16px);
   opacity: 0.45;
   pointer-events: none;
-  transition: all 700ms ease;
+  transform: translate3d(
+    calc((var(--cursor-x, 50%) - 50%) * 0.16),
+    calc((var(--cursor-y, 25%) - 50%) * 0.2 + var(--parallax-offset, 0px) * 0.5),
+    0
+  );
+  transition:
+    transform 220ms ease,
+    opacity 700ms ease,
+    filter 700ms ease;
+  will-change: transform;
 }
 
 .site-footer {
@@ -143,5 +164,15 @@
   .site-footer {
     flex-direction: column;
     align-items: flex-start;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .scroll-progress {
+    transition: none;
+  }
+
+  .ambience-glow {
+    transform: none;
   }
 }

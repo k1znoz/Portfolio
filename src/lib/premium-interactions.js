@@ -10,8 +10,9 @@ export function tiltCard(node, params = {}) {
     return {}
   }
 
-  const intensity = Number(params.intensity ?? 7)
-  const scale = Number(params.scale ?? 1.01)
+  let intensity = Number(params.intensity ?? 7)
+  let scale = Number(params.scale ?? 1.01)
+  let disabled = Boolean(params.disabled)
 
   let rafId = 0
   let pointerX = 0
@@ -30,6 +31,10 @@ export function tiltCard(node, params = {}) {
   }
 
   function onPointerMove(event) {
+    if (disabled) {
+      return
+    }
+
     pointerX = event.clientX
     pointerY = event.clientY
 
@@ -53,6 +58,15 @@ export function tiltCard(node, params = {}) {
   node.addEventListener('blur', resetTilt)
 
   return {
+    update(nextParams = {}) {
+      intensity = Number(nextParams.intensity ?? intensity)
+      scale = Number(nextParams.scale ?? scale)
+      disabled = Boolean(nextParams.disabled)
+
+      if (disabled) {
+        resetTilt()
+      }
+    },
     destroy() {
       node.removeEventListener('pointermove', onPointerMove)
       node.removeEventListener('pointerleave', resetTilt)

@@ -1,0 +1,103 @@
+.tower-defense {
+  display: grid;
+  gap: 0.65rem;
+}
+
+.tower-hud {
+  display: grid;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  gap: 0.45rem;
+}
+
+.tower-hud p {
+  margin: 0;
+  padding: 0.45rem 0.55rem;
+  border-radius: 10px;
+  border: 1px solid color-mix(in srgb, var(--outline), transparent 18%);
+  background: color-mix(in srgb, var(--surface-strong), #000 6%);
+  font-family: 'Space Mono', monospace;
+  font-size: 0.74rem;
+}
+
+.tower-hud span {
+  display: block;
+  margin-bottom: 0.14rem;
+  color: var(--muted);
+  font-size: 0.62rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.tower-controls {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.45rem;
+}
+
+.tower-controls button {
+  border: 1px solid color-mix(in srgb, var(--outline), transparent 10%);
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--surface-strong), #000 6%);
+  color: var(--text);
+  font-family: 'Space Mono', monospace;
+  font-size: 0.72rem;
+  padding: 0.28rem 0.74rem;
+  cursor: pointer;
+}
+
+.tower-controls button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.tower-cost {
+  margin: 0;
+  margin-left: auto;
+  color: var(--muted);
+  font-size: 0.78rem;
+}
+
+.tower-stage {
+  border-radius: 14px;
+  overflow: hidden;
+  border: 1px solid color-mix(in srgb, var(--outline), transparent 12%);
+  background:
+    radial-gradient(circle at 12% 24%, color-mix(in srgb, var(--accent), transparent 74%), transparent 46%),
+    radial-gradient(circle at 88% 76%, color-mix(in srgb, var(--primary), transparent 70%), transparent 44%),
+    color-mix(in srgb, var(--surface), #000 14%);
+}
+
+.tower-stage canvas {
+  display: block;
+  width: 100%;
+  height: auto;
+  cursor: crosshair;
+}
+
+.tower-hint {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.82rem;
+}
+
+.tower-defense.is-compact .tower-stage canvas {
+  max-height: 300px;
+}
+
+@media (max-width: 900px) {
+  .tower-hud {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 700px) {
+  .tower-hud {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .tower-cost {
+    width: 100%;
+    margin-left: 0;
+  }
+}

@@ -5,9 +5,11 @@
   import ContactSection from './components/ContactSection.svelte'
   import CvPage from './components/CvPage.svelte'
   import CvShowcase from './components/CvShowcase.svelte'
+  import GamePage from './components/GamePage.svelte'
   import HeroSection from './components/HeroSection.svelte'
   import MetricsPanel from './components/MetricsPanel.svelte'
   import ProjectsSection from './components/ProjectsSection.svelte'
+  import TowerDefensePage from './components/TowerDefensePage.svelte'
   import TopNav from './components/TopNav.svelte'
   import {
     contactLinks,
@@ -46,6 +48,14 @@
   let parallaxOffset = 0
   let cursorX = 50
   let cursorY = 25
+  const currentYear = new Date().getFullYear()
+
+  function normalizePath(pathname) {
+    if (pathname === '/cv') return '/cv'
+    if (pathname === '/game') return '/game'
+    if (pathname === '/tower-defense') return '/tower-defense'
+    return '/'
+  }
 
   function prefersReducedMotion() {
     return typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches
@@ -68,10 +78,11 @@
     })
   }
 
+
   $: currentTheme = themes[themeIndex]
   $: isCvPage = currentPath === '/cv'
+  $: isGamePage = currentPath === '/game' || currentPath === '/tower-defense'
   $: motion = drifts[switchCount % drifts.length]
-  $: currentYear = new Date().getFullYear()
   $: if (typeof document !== 'undefined') {
     document.body.dataset.theme = currentTheme.id
   }
@@ -154,19 +165,18 @@
   }
 
   onMount(() => {
-    const normalized = window.location.pathname === '/cv' ? '/cv' : '/'
+    const normalized = normalizePath(window.location.pathname)
     currentPath = normalized
     const reduceMotionQuery = window.matchMedia('(prefers-reduced-motion: reduce)')
     let rafId = 0
 
     refreshLanguageOrder()
-
     if (window.location.pathname !== normalized) {
       window.history.replaceState({}, '', normalized)
     }
 
     const onPopState = () => {
-      currentPath = window.location.pathname === '/cv' ? '/cv' : '/'
+      currentPath = normalizePath(window.location.pathname)
     }
 
     const updateAmbientMotion = () => {
@@ -231,7 +241,7 @@
   })
 
   function navigateTo(path) {
-    const normalized = path === '/cv' ? '/cv' : '/'
+    const normalized = normalizePath(path)
 
     if (currentPath === normalized) {
       return
@@ -302,6 +312,7 @@
       {themes}
       {currentTheme}
       {isCvPage}
+      {isGamePage}
       onSwitchTheme={nextTheme}
       onSelectTheme={selectTheme}
       onOpenCvPage={() => navigateTo('/cv')}
@@ -310,6 +321,12 @@
 
     {#if isCvPage}
       <CvPage {cvProfile} cvWeb={runtimeCvWeb} {currentTheme} />
+    {:else if isGamePage}
+      {#if currentPath === '/tower-defense'}
+        <TowerDefensePage onOpenHomePage={() => navigateTo('/')} />
+      {:else}
+        <GamePage onOpenHomePage={() => navigateTo('/')} />
+      {/if}
     {:else}
       <HeroSection {currentTheme} stack={runtimeStack} />
       <MetricsPanel {metrics} />

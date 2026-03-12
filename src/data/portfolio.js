@@ -30,6 +30,38 @@ export const metrics = [
 
 export const projects = [
   {
+    date: '03/2026',
+    name: 'Lane Defender',
+    type: 'Tower Defense - Svelte Canvas',
+    summary:
+      'Prototype Tower Defense en lane unique: placement de tours, vagues progressives, economie et gestion des vies.',
+    links: {
+      live: null,
+      source: 'https://github.com/k1znoz/Portfolio',
+    },
+    demo: {
+      mode: 'internal',
+      game: 'tower-defense',
+      path: '/tower-defense',
+    },
+  },
+  {
+    date: '03/2026',
+    name: 'Reflex Shot',
+    type: 'Mini jeu integre',
+    summary:
+      'Mini jeu de reflexes integre directement dans la section projets: 30 secondes pour faire le meilleur score.',
+    links: {
+      live: null,
+      source: 'https://github.com/k1znoz/Portfolio',
+    },
+    demo: {
+      mode: 'internal',
+      game: 'mini-reflex',
+      path: '/game',
+    },
+  },
+  {
     date: '01/2026',
     name: 'LivingSoils',
     type: 'Svelte',
@@ -144,7 +176,7 @@ export const cvWeb = {
   experiences: [
     {
       period: 'Depuis 2023',
-      company: 'Grow - Paris',
+      company: 'Grauw - Paris',
       role: 'Stage (1 mois)',
       points: [
         "Creation d'interfaces web responsives, du maquettage au developpement dynamique.",

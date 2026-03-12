@@ -1,0 +1,57 @@
+.game-page {
+  grid-column: 1 / -1;
+  min-height: calc(100vh - 8.5rem);
+  display: grid;
+  gap: 1rem;
+}
+
+.game-page-head {
+  display: grid;
+  gap: 0.55rem;
+}
+
+.game-page-head h1 {
+  font-size: clamp(1.45rem, 3vw, 2rem);
+}
+
+.game-page-intro {
+  color: var(--muted);
+  max-width: 68ch;
+}
+
+.game-page-actions {
+  display: flex;
+  gap: 0.65rem;
+  flex-wrap: wrap;
+}
+
+.game-page-back,
+.game-page-source {
+  text-decoration: none;
+  border: 1px solid color-mix(in srgb, var(--outline), transparent 10%);
+  border-radius: 999px;
+  background: var(--surface-strong);
+  color: var(--text);
+  font-family: 'Space Mono', monospace;
+  font-size: 0.78rem;
+  padding: 0.35rem 0.9rem;
+}
+
+.game-page-back {
+  cursor: pointer;
+}
+
+.game-page-stage {
+  border-radius: 16px;
+  border: 1px solid color-mix(in srgb, var(--outline), transparent 12%);
+  background: color-mix(in srgb, var(--surface), #000 4%);
+  padding: clamp(0.75rem, 2vw, 1rem);
+}
+
+.game-page-stage .mini-reflex-arena {
+  min-height: clamp(420px, 62vh, 760px);
+}
+
+.game-page-stage .tower-stage canvas {
+  min-height: clamp(460px, 66vh, 820px);
+}

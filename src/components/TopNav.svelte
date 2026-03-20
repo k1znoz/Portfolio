@@ -8,6 +8,7 @@
   export let onSelectTheme
   export let isCvPage = false
   export let onOpenCvPage
+  export let onOpenAdminPage
   export let onOpenHomePage
 </script>
 
@@ -24,6 +25,7 @@
       <a href="#about">A propos</a>
       <a href="#contact">Contact</a>
       <button type="button" class="nav-link-btn" on:click={onOpenCvPage}>Page CV</button>
+      <button type="button" class="nav-link-btn" on:click={onOpenAdminPage}>Admin</button>
     </div>
   {/if}
 

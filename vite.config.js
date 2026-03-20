@@ -15,8 +15,23 @@ const securityHeaders = {
 // https://vite.dev/config/
 export default defineConfig({
   plugins: [svelte()],
+  test: {
+    environment: 'jsdom',
+    setupFiles: ['./src/test/setup.js'],
+    include: ['src/**/*.test.js', 'server/**/*.test.js'],
+    coverage: {
+      reporter: ['text', 'html'],
+      reportsDirectory: './coverage',
+    },
+  },
   server: {
     headers: securityHeaders,
+    proxy: {
+      '/api': {
+        target: 'http://localhost:8787',
+        changeOrigin: true,
+      },
+    },
   },
   preview: {
     headers: securityHeaders,

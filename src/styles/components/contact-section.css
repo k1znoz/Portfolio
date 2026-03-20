@@ -26,6 +26,21 @@
   font-size: 0.9rem;
 }
 
+.contact-form__consent {
+  grid-template-columns: auto 1fr;
+  align-items: start;
+  column-gap: 0.6rem;
+}
+
+.contact-form__consent input {
+  margin-top: 0.2rem;
+}
+
+.contact-form__honeypot {
+  position: absolute;
+  left: -9999px;
+}
+
 .contact-form input,
 .contact-form textarea {
   border: 1px solid var(--outline);
@@ -48,10 +63,19 @@
   color: #fff;
 }
 
+.contact-form button:disabled {
+  opacity: 0.72;
+  cursor: wait;
+}
+
 .contact-feedback {
   margin-top: 0.25rem;
   color: var(--primary);
   font-size: 0.9rem;
+}
+
+.contact-feedback--error {
+  color: #b43b3b;
 }
 
 .contact-links {

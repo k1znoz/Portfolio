@@ -6,11 +6,13 @@
   import CvPage from './components/CvPage.svelte'
   import CvShowcase from './components/CvShowcase.svelte'
   import GamePage from './components/GamePage.svelte'
+  import AdminPage from './components/AdminPage.svelte'
   import HeroSection from './components/HeroSection.svelte'
   import MetricsPanel from './components/MetricsPanel.svelte'
   import ProjectsSection from './components/ProjectsSection.svelte'
   import TowerDefensePage from './components/TowerDefensePage.svelte'
   import TopNav from './components/TopNav.svelte'
+  import { fetchProjects } from './lib/api-client'
   import {
     contactLinks,
     cvProfile,
@@ -39,6 +41,7 @@
   let isSwitching = false
   let switchCount = 0
   let currentPath = '/'
+  let runtimeProjects = [...projects]
   let runtimeStack = [...baseStack]
   let runtimeCvWeb = {
     ...cvWeb,
@@ -54,6 +57,7 @@
     if (pathname === '/cv') return '/cv'
     if (pathname === '/game') return '/game'
     if (pathname === '/tower-defense') return '/tower-defense'
+    if (pathname === '/admin') return '/admin'
     return '/'
   }
 
@@ -82,6 +86,8 @@
   $: currentTheme = themes[themeIndex]
   $: isCvPage = currentPath === '/cv'
   $: isGamePage = currentPath === '/game' || currentPath === '/tower-defense'
+  $: isAdminPage = currentPath === '/admin'
+  $: isRoutedPage = isCvPage || isGamePage || isAdminPage
   $: motion = drifts[switchCount % drifts.length]
   $: if (typeof document !== 'undefined') {
     document.body.dataset.theme = currentTheme.id
@@ -164,6 +170,18 @@
     }
   }
 
+  async function refreshProjects() {
+    try {
+      const apiProjects = await fetchProjects()
+      if (Array.isArray(apiProjects) && apiProjects.length > 0) {
+        runtimeProjects = apiProjects
+      }
+    } catch {
+      // Keep local static projects when API cannot be reached.
+      runtimeProjects = [...projects]
+    }
+  }
+
   onMount(() => {
     const normalized = normalizePath(window.location.pathname)
     currentPath = normalized
@@ -171,6 +189,7 @@
     let rafId = 0
 
     refreshLanguageOrder()
+    refreshProjects()
     if (window.location.pathname !== normalized) {
       window.history.replaceState({}, '', normalized)
     }
@@ -311,16 +330,18 @@
       {ownerName}
       {themes}
       {currentTheme}
-      {isCvPage}
-      {isGamePage}
+      isCvPage={isRoutedPage}
       onSwitchTheme={nextTheme}
       onSelectTheme={selectTheme}
       onOpenCvPage={() => navigateTo('/cv')}
+      onOpenAdminPage={() => navigateTo('/admin')}
       onOpenHomePage={() => navigateTo('/')}
     />
 
     {#if isCvPage}
       <CvPage {cvProfile} cvWeb={runtimeCvWeb} {currentTheme} />
+    {:else if isAdminPage}
+      <AdminPage onOpenHomePage={() => navigateTo('/')} onProjectsUpdated={refreshProjects} />
     {:else if isGamePage}
       {#if currentPath === '/tower-defense'}
         <TowerDefensePage onOpenHomePage={() => navigateTo('/')} />
@@ -331,7 +352,7 @@
       <HeroSection {currentTheme} stack={runtimeStack} />
       <MetricsPanel {metrics} />
       <CvShowcase {cvProfile} onOpenCvPage={() => navigateTo('/cv')} />
-      <ProjectsSection {projects} />
+      <ProjectsSection projects={runtimeProjects} />
       <AboutSection {services} />
       <ContactSection {contactLinks} />
     {/if}

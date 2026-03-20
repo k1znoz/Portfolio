@@ -1,70 +1,42 @@
-# Svelte + Vite
+# Portfolio CDA - RNCP37873
 
-This template should help get you started developing with Svelte in Vite.
+Projet principal de presentation des competences pour le titre professionnel Concepteur Developpeur d'Applications.
 
-## Recommended IDE Setup
+## Demarrage rapide
 
-[VS Code](https://code.visualstudio.com/) + [Svelte](https://marketplace.visualstudio.com/items?itemName=svelte.svelte-vscode).
+- npm install
+- npm run dev
+- npm run dev:api
 
-## Security Headers
+## Qualite
 
-This project now sets anti-embedding and cross-origin isolation headers in Vite
-`dev` and `preview` modes via `vite.config.js`.
+- npm run format:check
+- npm run test
+- npm run coverage
+- npm run check
 
-For production, static assets do not emit headers by themselves. Configure your
-hosting platform or reverse proxy to return these headers:
+## Build
 
-- `X-Frame-Options: DENY`
-- `Content-Security-Policy: frame-ancestors 'none'`
-- `Cross-Origin-Opener-Policy: same-origin`
-- `Cross-Origin-Embedder-Policy: require-corp`
-- `Cross-Origin-Resource-Policy: same-origin`
+- npm run build
+- npm run preview
 
-Example (Nginx):
+## Dossier de preuves CDA
 
-```nginx
-add_header X-Frame-Options "DENY" always;
-add_header Content-Security-Policy "frame-ancestors 'none'" always;
-add_header Cross-Origin-Opener-Policy "same-origin" always;
-add_header Cross-Origin-Embedder-Policy "require-corp" always;
-add_header Cross-Origin-Resource-Policy "same-origin" always;
-```
+- Matrice competences: docs/cda-competences-matrice.md
+- Architecture: docs/architecture.md
+- Plan de tests: docs/test-plan.md
+- Deploiement/DevOps: docs/deployment.md
+- RGPD/RGAA: docs/rgpd-rgaa.md
 
-Note: `Cross-Origin-Embedder-Policy: require-corp` can block third-party assets
-that do not send compatible CORS/CORP headers.
+## Points techniques deja couverts
 
-## Need an official Svelte framework?
+- Frontend Svelte modulaire et responsive.
+- API Express + base SQLite relationnelle pour projets et messages de contact.
+- Formulaire de contact avec validation metier, consentement RGPD et protection anti-spam.
+- Tests unitaires Vitest sur logique metier critique.
+- Pipeline CI GitHub Actions (tests, build).
+- En-tetes de securite configures en dev/preview via Vite.
 
-Check out [SvelteKit](https://github.com/sveltejs/kit#readme), which is also powered by Vite. Deploy anywhere with its serverless-first approach and adapt to various platforms, with out of the box support for TypeScript, SCSS, and Less, and easily-added support for mdsvex, GraphQL, PostCSS, Tailwind CSS, and more.
+## Limites et extension recommandee
 
-## Technical considerations
-
-**Why use this over SvelteKit?**
-
-- It brings its own routing solution which might not be preferable for some users.
-- It is first and foremost a framework that just happens to use Vite under the hood, not a Vite app.
-
-This template contains as little as possible to get started with Vite + Svelte, while taking into account the developer experience with regards to HMR and intellisense. It demonstrates capabilities on par with the other `create-vite` templates and is a good starting point for beginners dipping their toes into a Vite + Svelte project.
-
-Should you later need the extended capabilities and extensibility provided by SvelteKit, the template has been structured similarly to SvelteKit so that it is easy to migrate.
-
-**Why include `.vscode/extensions.json`?**
-
-Other templates indirectly recommend extensions via the README, but this file allows VS Code to prompt the user to install the recommended extension upon opening the project.
-
-**Why enable `checkJs` in the JS template?**
-
-It is likely that most cases of changing variable types in runtime are likely to be accidental, rather than deliberate. This provides advanced typechecking out of the box. Should you like to take advantage of the dynamically-typed nature of JavaScript, it is trivial to change the configuration.
-
-**Why is HMR not preserving my local component state?**
-
-HMR state preservation comes with a number of gotchas! It has been disabled by default in both `svelte-hmr` and `@sveltejs/vite-plugin-svelte` due to its often surprising behavior. You can read the details [here](https://github.com/sveltejs/svelte-hmr/tree/master/packages/svelte-hmr#preservation-of-local-state).
-
-If you have state that's important to retain within a component, consider creating an external store which would not be replaced by HMR.
-
-```js
-// store.js
-// An extremely simple external store
-import { writable } from 'svelte/store'
-export default writable(0)
-```
+Pour une cible de production, remplacer SQLite par PostgreSQL/MySQL et ajouter des migrations versionnees + authentification admin plus robuste (JWT/roles).

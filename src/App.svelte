@@ -12,11 +12,30 @@
   import ProjectsSection from './components/ProjectsSection.svelte'
   import TowerDefensePage from './components/TowerDefensePage.svelte'
   import TopNav from './components/TopNav.svelte'
+  import ContactTerminal from './components/ThemeCyberBrute/ContactTerminal.svelte'
+  import CyberFooter from './components/ThemeCyberBrute/Footer.svelte'
+  import Hero from './components/ThemeCyberBrute/Hero.svelte'
+  import ProcessSection from './components/ThemeCyberBrute/ProcessSection.svelte'
+  import ProjectGrid from './components/ThemeCyberBrute/ProjectGrid.svelte'
+  import SideNavBar from './components/ThemeCyberBrute/SideNavBar.svelte'
+  import StatsBento from './components/ThemeCyberBrute/StatsBento.svelte'
+  import TopAppBar from './components/ThemeCyberBrute/TopAppBar.svelte'
+  // ── IronCode theme ────────────────────────────────────────────────────────
+  import IronTopAppBar from './components/ThemeIronCode/TopAppBar.svelte'
+  import IronHero from './components/ThemeIronCode/Hero.svelte'
+  import IronStatsBar from './components/ThemeIronCode/StatsBar.svelte'
+  import IronProjectGrid from './components/ThemeIronCode/ProjectGrid.svelte'
+  import IronSkillGrades from './components/ThemeIronCode/SkillGrades.svelte'
+  import IronTimeline from './components/ThemeIronCode/Timeline.svelte'
+  import IronContactForge from './components/ThemeIronCode/ContactForge.svelte'
+  import IronFooter from './components/ThemeIronCode/Footer.svelte'
+  import GlitchTransitionOverlay from './components/GlitchTransitionOverlay.svelte'
   import { fetchProjects } from './lib/api-client'
   import {
     contactLinks,
     cvProfile,
     cvWeb,
+    layoutThemes,
     metrics,
     projects,
     services,
@@ -39,6 +58,7 @@
     themes.findIndex((theme) => theme.id === 'neon')
   )
   let isSwitching = false
+  let isLayoutSwitching = false
   let switchCount = 0
   let currentPath = '/'
   let runtimeProjects = [...projects]
@@ -51,6 +71,11 @@
   let parallaxOffset = 0
   let cursorX = 50
   let cursorY = 25
+  let glitchTrigger = 0
+  let glitchMode = 'theme'
+  let isGlobalSwitcherOpen = false
+  let globalSwitcherPanelEl
+  let globalSwitcherTriggerEl
   const currentYear = new Date().getFullYear()
 
   function normalizePath(pathname) {
@@ -84,13 +109,24 @@
 
 
   $: currentTheme = themes[themeIndex]
+  let layoutThemeIndex = 0
+  $: currentLayoutTheme = layoutThemes[layoutThemeIndex]
   $: isCvPage = currentPath === '/cv'
   $: isGamePage = currentPath === '/game' || currentPath === '/tower-defense'
   $: isAdminPage = currentPath === '/admin'
   $: isRoutedPage = isCvPage || isGamePage || isAdminPage
+  $: isCyberBruteLayout = !isRoutedPage && currentLayoutTheme.id === 'cyber-brute'
+  $: isIronCodeLayout   = !isRoutedPage && currentLayoutTheme.id === 'iron-code'
+  $: githubProfileLink =
+    contactLinks.find((link) => link.label.toLowerCase().includes('github'))?.href ??
+    'https://github.com/k1znoz'
+  $: githubHandle = githubProfileLink.split('/').filter(Boolean).pop() ?? ownerName
+  $: stackSummary = runtimeStack.slice(0, 2).join(' + ') || 'Svelte + Laravel'
+  $: locationSummary = runtimeCvWeb.contact?.[0]?.split(',').slice(-1)[0]?.trim() ?? 'Voutezac'
   $: motion = drifts[switchCount % drifts.length]
   $: if (typeof document !== 'undefined') {
     document.body.dataset.theme = currentTheme.id
+    document.body.dataset.layoutTheme = currentLayoutTheme.id
   }
 
   function sortByLanguageWeight(items, weightsMap) {
@@ -185,8 +221,24 @@
   onMount(() => {
     const normalized = normalizePath(window.location.pathname)
     currentPath = normalized
+    const storedThemeId = window.localStorage.getItem('portfolio-theme-id')
+    const storedLayoutThemeId = window.localStorage.getItem('portfolio-layout-theme-id')
     const reduceMotionQuery = window.matchMedia('(prefers-reduced-motion: reduce)')
     let rafId = 0
+
+    if (storedThemeId) {
+      const storedThemeIndex = themes.findIndex((theme) => theme.id === storedThemeId)
+      if (storedThemeIndex !== -1) {
+        themeIndex = storedThemeIndex
+      }
+    }
+
+    if (storedLayoutThemeId) {
+      const storedLayoutIndex = layoutThemes.findIndex((theme) => theme.id === storedLayoutThemeId)
+      if (storedLayoutIndex !== -1) {
+        layoutThemeIndex = storedLayoutIndex
+      }
+    }
 
     refreshLanguageOrder()
     refreshProjects()
@@ -239,12 +291,62 @@
       requestAmbientMotionUpdate()
     }
 
+    const onCyberAnchorClick = (event) => {
+      if (!isCyberBruteLayout && !isIronCodeLayout) {
+        return
+      }
+
+      const trigger = event.target?.closest?.('a[href^="#"]')
+      if (!trigger) {
+        return
+      }
+
+      const hash = trigger.getAttribute('href')
+      if (!hash || hash.length < 2) {
+        return
+      }
+
+      const target = document.querySelector(hash)
+      if (!target) {
+        return
+      }
+
+      event.preventDefault()
+      target.scrollIntoView({ behavior: 'smooth', block: 'start' })
+      window.history.replaceState({}, '', hash)
+    }
+
+    const onGlobalPointerDown = (event) => {
+      if (!isGlobalSwitcherOpen) {
+        return
+      }
+
+      const target = event.target
+      const clickedInsidePanel = globalSwitcherPanelEl?.contains(target)
+      const clickedTrigger = globalSwitcherTriggerEl?.contains(target)
+
+      if (clickedInsidePanel || clickedTrigger) {
+        return
+      }
+
+      isGlobalSwitcherOpen = false
+    }
+
+    const onGlobalKeyDown = (event) => {
+      if (event.key === 'Escape' && isGlobalSwitcherOpen) {
+        isGlobalSwitcherOpen = false
+      }
+    }
+
     updateAmbientMotion()
 
     window.addEventListener('popstate', onPopState)
     window.addEventListener('scroll', requestAmbientMotionUpdate, { passive: true })
     window.addEventListener('resize', requestAmbientMotionUpdate)
     window.addEventListener('pointermove', onPointerMove, { passive: true })
+    window.addEventListener('click', onCyberAnchorClick)
+    window.addEventListener('pointerdown', onGlobalPointerDown)
+    window.addEventListener('keydown', onGlobalKeyDown)
     reduceMotionQuery.addEventListener('change', onMotionPreferenceChange)
 
     return () => {
@@ -252,6 +354,9 @@
       window.removeEventListener('scroll', requestAmbientMotionUpdate)
       window.removeEventListener('resize', requestAmbientMotionUpdate)
       window.removeEventListener('pointermove', onPointerMove)
+      window.removeEventListener('click', onCyberAnchorClick)
+      window.removeEventListener('pointerdown', onGlobalPointerDown)
+      window.removeEventListener('keydown', onGlobalKeyDown)
       reduceMotionQuery.removeEventListener('change', onMotionPreferenceChange)
       if (rafId) {
         window.cancelAnimationFrame(rafId)
@@ -286,8 +391,10 @@
     runWithViewTransition(
       () => {
         isSwitching = true
+        glitchMode = 'theme'
+        glitchTrigger += 1
         themeIndex = (themeIndex - 1 + themes.length) % themes.length
-        switchCount += 1
+         switchCount += 1
       },
       ['theme']
     )
@@ -295,6 +402,10 @@
     setTimeout(() => {
       isSwitching = false
     }, 850)
+
+    if (typeof window !== 'undefined') {
+      window.localStorage.setItem('portfolio-theme-id', themes[themeIndex].id)
+    }
   }
 
   function selectTheme(themeId) {
@@ -306,6 +417,8 @@
     runWithViewTransition(
       () => {
         isSwitching = true
+        glitchMode = 'theme'
+        glitchTrigger += 1
         themeIndex = targetIndex
         switchCount += 1
       },
@@ -315,51 +428,219 @@
     setTimeout(() => {
       isSwitching = false
     }, 850)
+
+    if (typeof window !== 'undefined') {
+      window.localStorage.setItem('portfolio-theme-id', themeId)
+    }
+  }
+
+  function selectLayoutTheme(layoutThemeId) {
+    if (isLayoutSwitching) return
+
+    const targetIndex = layoutThemes.findIndex((theme) => theme.id === layoutThemeId)
+    if (targetIndex === -1 || targetIndex === layoutThemeIndex) return
+
+    runWithViewTransition(
+      () => {
+        isLayoutSwitching = true
+        glitchMode = 'layout'
+        glitchTrigger += 1
+        layoutThemeIndex = targetIndex
+      },
+      ['layout']
+    )
+
+    setTimeout(() => {
+      isLayoutSwitching = false
+    }, 700)
+
+    if (typeof window !== 'undefined') {
+      window.localStorage.setItem('portfolio-layout-theme-id', layoutThemeId)
+    }
   }
 </script>
 
 <main
-  class={`portfolio-shell theme-${currentTheme.id} ${isSwitching ? 'is-switching' : ''}`}
+  class={`portfolio-shell theme-${currentTheme.id} layout-${currentLayoutTheme.id} ${isCyberBruteLayout ? 'is-cyber-brute' : ''} ${isIronCodeLayout ? 'is-iron-code' : ''} ${isSwitching || isLayoutSwitching ? 'is-switching' : ''} ${isSwitching ? 'is-theme-switching' : ''} ${isLayoutSwitching ? 'is-layout-switching' : ''}`}
   style={`--drift-x:${motion.x};--drift-y:${motion.y};--drift-r:${motion.r};--scroll-progress:${scrollProgress}%;--parallax-offset:${parallaxOffset}px;--cursor-x:${cursorX}%;--cursor-y:${cursorY}%;`}
 >
   <div class="scroll-progress" aria-hidden="true"></div>
   <div class="ambience-glow" aria-hidden="true"></div>
+  <GlitchTransitionOverlay trigger={glitchTrigger} mode={glitchMode} />
+  <div class="transition-glitch transition-glitch--primary" aria-hidden="true"></div>
+  <div class="transition-glitch transition-glitch--secondary" aria-hidden="true"></div>
 
-  <div class="portfolio-inner">
-    <TopNav
-      {ownerName}
-      {themes}
-      {currentTheme}
-      isCvPage={isRoutedPage}
-      onSwitchTheme={nextTheme}
-      onSelectTheme={selectTheme}
-      onOpenCvPage={() => navigateTo('/cv')}
-      onOpenAdminPage={() => navigateTo('/admin')}
-      onOpenHomePage={() => navigateTo('/')}
+  {#if !isRoutedPage}
+    <button
+      type="button"
+      class={`global-theme-switcher-trigger global-theme-switcher-trigger--layout-${currentLayoutTheme.id} global-theme-switcher-trigger--theme-${currentTheme.id} ${isGlobalSwitcherOpen ? 'is-open' : ''}`}
+      aria-label="Afficher les options de thème"
+      aria-controls="global-theme-switcher-panel"
+      aria-expanded={isGlobalSwitcherOpen}
+      on:click={() => (isGlobalSwitcherOpen = !isGlobalSwitcherOpen)}
+      bind:this={globalSwitcherTriggerEl}
+    >
+      <span class="material-symbols-outlined" aria-hidden="true">
+        {isGlobalSwitcherOpen ? 'close' : 'menu'}
+      </span>
+    </button>
+
+    <aside
+      id="global-theme-switcher-panel"
+      class={`global-theme-switcher global-theme-switcher--layout-${currentLayoutTheme.id} global-theme-switcher--theme-${currentTheme.id} ${isGlobalSwitcherOpen ? 'is-open' : ''}`}
+      aria-label="Choix du thème et du layout"
+      bind:this={globalSwitcherPanelEl}
+    >
+      <div class="global-theme-switcher__group">
+        <p class="global-theme-switcher__label">Layout</p>
+        <div class="global-theme-switcher__row" role="tablist" aria-label="Layouts disponibles">
+          {#each layoutThemes as layoutTheme}
+            <button
+              type="button"
+              class={`global-theme-switcher__btn ${layoutTheme.id === currentLayoutTheme.id ? 'is-active' : ''}`}
+              on:click={() => {
+                selectLayoutTheme(layoutTheme.id)
+                isGlobalSwitcherOpen = false
+              }}
+              aria-pressed={layoutTheme.id === currentLayoutTheme.id}
+            >
+              {layoutTheme.name}
+            </button>
+          {/each}
+        </div>
+      </div>
+
+      <div class="global-theme-switcher__group">
+        <p class="global-theme-switcher__label">Ambiance</p>
+        <div class="global-theme-switcher__row" role="tablist" aria-label="Ambiances disponibles">
+          {#each themes as theme}
+            <button
+              type="button"
+              class={`global-theme-switcher__swatch ${theme.id === currentTheme.id ? 'is-active' : ''}`}
+              style={`--swatch-a:${theme.colors[0]};--swatch-b:${theme.colors[1]};`}
+              on:click={() => {
+                selectTheme(theme.id)
+                isGlobalSwitcherOpen = false
+              }}
+              aria-pressed={theme.id === currentTheme.id}
+              title={theme.name}
+            >
+              <span class="sr-only">{theme.name}</span>
+            </button>
+          {/each}
+          <button
+            type="button"
+            class="global-theme-switcher__cycle"
+            on:click={() => {
+              nextTheme()
+              isGlobalSwitcherOpen = false
+            }}
+          >
+            ↻
+          </button>
+        </div>
+      </div>
+    </aside>
+  {/if}
+
+  {#if isCyberBruteLayout}
+    <TopAppBar
+      ownerName={ownerName}
+      githubUrl={githubProfileLink}
+      showLayoutToggle={false}
+      onJumpProjects={() => {
+        if (typeof document === 'undefined') return
+        document.getElementById('projects')?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+      }}
+      onSwitchToBaseLayout={() => selectLayoutTheme('editorial')}
     />
+    <SideNavBar cvFileUrl={cvProfile.fileUrl} />
+    <div class="cyber-brute-main pt-16 pb-12 min-h-screen bg-[#0e0e0e] text-on-surface cyber-scrollbar overflow-x-hidden">
+      <Hero
+        fullName={runtimeCvWeb.fullName}
+        title={runtimeCvWeb.title}
+        pitch={runtimeCvWeb.pitch}
+      />
+      <StatsBento {metrics} />
+      <ProjectGrid projects={runtimeProjects} />
+      <ProcessSection experiences={runtimeCvWeb.experiences} />
+      <ContactTerminal {contactLinks} />
+    </div>
+    <CyberFooter
+      {ownerName}
+      {currentYear}
+      githubHandle={githubHandle}
+      stackLabel={stackSummary}
+      location={locationSummary}
+    />
+  {:else if isIronCodeLayout}
+    <!-- ── IronCode layout ─────────────────────────────────────────────── -->
+    <IronTopAppBar
+      showLayoutToggle={false}
+      onHireClick={() => {
+        if (typeof document === 'undefined') return
+        document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+      }}
+      onSwitchToBaseLayout={() => selectLayoutTheme('editorial')}
+    />
+    <div class="iron-code-main pt-20 min-h-screen bg-[#131313] text-on-surface overflow-x-hidden selection:bg-primary-container selection:text-on-primary-container">
+      <IronHero
+        fullName={runtimeCvWeb.fullName}
+        title={runtimeCvWeb.title}
+        pitch={runtimeCvWeb.pitch}
+        onContactClick={() => {
+          if (typeof document === 'undefined') return
+          document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+        }}
+      />
+      <IronStatsBar {metrics} />
+      <IronProjectGrid projects={runtimeProjects} />
+      <IronSkillGrades skills={runtimeStack} />
+      <IronTimeline experiences={runtimeCvWeb.experiences} />
+      <IronContactForge />
+    </div>
+    <IronFooter {ownerName} {currentYear} {contactLinks} />
+  {:else}
+    <div class="portfolio-inner">
+      <TopNav
+        {ownerName}
+        {themes}
+        {currentTheme}
+        {layoutThemes}
+        {currentLayoutTheme}
+        showThemeControls={false}
+        isCvPage={isRoutedPage}
+        onSwitchTheme={nextTheme}
+        onSelectTheme={selectTheme}
+        onSelectLayoutTheme={selectLayoutTheme}
+        onOpenCvPage={() => navigateTo('/cv')}
+        onOpenAdminPage={() => navigateTo('/admin')}
+        onOpenHomePage={() => navigateTo('/')}
+      />
 
-    {#if isCvPage}
-      <CvPage {cvProfile} cvWeb={runtimeCvWeb} {currentTheme} />
-    {:else if isAdminPage}
-      <AdminPage onOpenHomePage={() => navigateTo('/')} onProjectsUpdated={refreshProjects} />
-    {:else if isGamePage}
-      {#if currentPath === '/tower-defense'}
-        <TowerDefensePage onOpenHomePage={() => navigateTo('/')} />
+      {#if isCvPage}
+        <CvPage {cvProfile} cvWeb={runtimeCvWeb} {currentTheme} />
+      {:else if isAdminPage}
+        <AdminPage onOpenHomePage={() => navigateTo('/')} onProjectsUpdated={refreshProjects} />
+      {:else if isGamePage}
+        {#if currentPath === '/tower-defense'}
+          <TowerDefensePage onOpenHomePage={() => navigateTo('/')} />
+        {:else}
+          <GamePage onOpenHomePage={() => navigateTo('/')} />
+        {/if}
       {:else}
-        <GamePage onOpenHomePage={() => navigateTo('/')} />
+        <HeroSection {currentTheme} stack={runtimeStack} />
+        <MetricsPanel {metrics} />
+        <CvShowcase {cvProfile} onOpenCvPage={() => navigateTo('/cv')} />
+        <ProjectsSection projects={runtimeProjects} />
+        <AboutSection {services} />
+        <ContactSection {contactLinks} />
       {/if}
-    {:else}
-      <HeroSection {currentTheme} stack={runtimeStack} />
-      <MetricsPanel {metrics} />
-      <CvShowcase {cvProfile} onOpenCvPage={() => navigateTo('/cv')} />
-      <ProjectsSection projects={runtimeProjects} />
-      <AboutSection {services} />
-      <ContactSection {contactLinks} />
-    {/if}
 
-    <footer class="panel site-footer">
-      <p>© {currentYear} {ownerName}. Portfolio evolutif construit avec Svelte.</p>
-      <a href="#hero">Retour en haut</a>
-    </footer>
-  </div>
+      <footer class="panel site-footer">
+        <p>© {currentYear} {ownerName}. Portfolio evolutif construit avec Svelte.</p>
+        <a href="#hero">Retour en haut</a>
+      </footer>
+    </div>
+  {/if}
 </main>

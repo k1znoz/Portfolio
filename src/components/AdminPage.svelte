@@ -1,4 +1,6 @@
 <script>
+  import { onDestroy } from 'svelte'
+
   import {
     adminCreateProject,
     adminDeleteProject,
@@ -18,6 +20,7 @@
     name: '',
     type: '',
     summary: '',
+    imageUrl: '',
     liveUrl: '',
     sourceUrl: '',
     demoMode: '',
@@ -31,7 +34,9 @@
   let isLoading = false
   let isSubmitting = false
   let feedback = ''
-  let errorMessage = ''
+  let feedbackIsError = false
+  let feedbackTimer = null
+  let activeTab = 'projects'
 
   let projects = []
   let messages = []
@@ -43,22 +48,42 @@
     adminKey = window.localStorage.getItem(ADMIN_KEY_STORAGE) || ''
   }
 
+  onDestroy(() => {
+    if (feedbackTimer) clearTimeout(feedbackTimer)
+  })
+
+  function showFeedback(message, isError = false) {
+    if (feedbackTimer) clearTimeout(feedbackTimer)
+    feedback = message
+    feedbackIsError = isError
+    feedbackTimer = setTimeout(() => {
+      feedback = ''
+    }, 4000)
+  }
+
   function resetForm() {
     editingProjectId = null
     projectForm = { ...emptyForm }
   }
 
   function persistAdminKey() {
-    if (typeof window === 'undefined') {
-      return
-    }
-
+    if (typeof window === 'undefined') return
     if (adminKey) {
       window.localStorage.setItem(ADMIN_KEY_STORAGE, adminKey)
-      return
+    } else {
+      window.localStorage.removeItem(ADMIN_KEY_STORAGE)
     }
+  }
 
-    window.localStorage.removeItem(ADMIN_KEY_STORAGE)
+  function handleDisconnect() {
+    isConnected = false
+    adminKey = ''
+    projects = []
+    messages = []
+    resetForm()
+    if (typeof window !== 'undefined') {
+      window.localStorage.removeItem(ADMIN_KEY_STORAGE)
+    }
   }
 
   function normalizeProjectPayload(input) {
@@ -77,6 +102,7 @@
       name,
       type,
       summary,
+      image: String(input.imageUrl || '').trim() || null,
       links: {
         live: String(input.liveUrl || '').trim() || null,
         source,
@@ -99,7 +125,6 @@
 
   async function loadAdminData() {
     isLoading = true
-    errorMessage = ''
 
     try {
       const [nextProjects, nextMessages] = await Promise.all([
@@ -110,20 +135,18 @@
       projects = nextProjects
       messages = nextMessages
       isConnected = true
-      feedback = 'Connexion admin active. Donnees chargees.'
+      showFeedback(`${nextProjects.length} projet(s) · ${nextMessages.length} message(s) charges.`)
     } catch (error) {
       isConnected = false
-      errorMessage = error?.message || 'Impossible de charger les donnees admin.'
+      showFeedback(error?.message || 'Impossible de charger les donnees admin.', true)
     } finally {
       isLoading = false
     }
   }
 
   async function handleConnect() {
-    feedback = ''
-
     if (!adminKey.trim()) {
-      errorMessage = 'La cle API admin est requise.'
+      showFeedback('La cle API admin est requise.', true)
       return
     }
 
@@ -133,11 +156,13 @@
 
   function handleEditProject(project) {
     editingProjectId = project.id
+    activeTab = 'projects'
     projectForm = {
       date: project.date || '',
       name: project.name || '',
       type: project.type || '',
       summary: project.summary || '',
+      imageUrl: project.image || '',
       liveUrl: project.links?.live || '',
       sourceUrl: project.links?.source || '',
       demoMode: project.demo?.mode || '',
@@ -147,188 +172,288 @@
     }
   }
 
+  function handleKeydown(event) {
+    if (event.key === 'Escape' && editingProjectId) {
+      resetForm()
+    }
+  }
+
   async function handleSubmitProject() {
     isSubmitting = true
-    errorMessage = ''
-    feedback = ''
 
     try {
       const payload = normalizeProjectPayload(projectForm)
 
       if (editingProjectId) {
         await adminUpdateProject(adminKey, editingProjectId, payload)
-        feedback = 'Projet mis a jour.'
+        showFeedback('Projet mis a jour avec succes.')
       } else {
         await adminCreateProject(adminKey, payload)
-        feedback = 'Projet cree.'
+        showFeedback('Nouveau projet cree avec succes.')
       }
 
       resetForm()
       await loadAdminData()
       await onProjectsUpdated()
     } catch (error) {
-      errorMessage = error?.message || 'Echec de sauvegarde du projet.'
+      showFeedback(error?.message || 'Echec de sauvegarde du projet.', true)
     } finally {
       isSubmitting = false
     }
   }
 
-  async function handleDeleteProject(projectId) {
-    if (!confirm('Supprimer ce projet ?')) {
+  async function handleDeleteProject(projectId, projectName) {
+    if (!confirm(`Supprimer "${projectName}" ? Cette action est irreversible.`)) {
       return
     }
 
-    errorMessage = ''
-    feedback = ''
-
     try {
       await adminDeleteProject(adminKey, projectId)
-      if (editingProjectId === projectId) {
-        resetForm()
-      }
-
-      feedback = 'Projet supprime.'
+      if (editingProjectId === projectId) resetForm()
+      showFeedback('Projet supprime.')
       await loadAdminData()
       await onProjectsUpdated()
     } catch (error) {
-      errorMessage = error?.message || 'Echec de suppression.'
+      showFeedback(error?.message || 'Echec de suppression.', true)
     }
   }
 </script>
 
+<svelte:window on:keydown={handleKeydown} />
+
 <section class="panel admin-page" aria-labelledby="admin-title">
+
+  <!-- ── En-tête ── -->
   <header class="admin-page__header">
     <div>
-      <p class="admin-page__eyebrow">Mode administration</p>
-      <h1 id="admin-title">CRUD Projets + messages de contact</h1>
-      <p>
-        Cette interface consomme les routes protegees API avec la cle
-        <code>x-admin-key</code>.
-      </p>
+      <p class="kicker">Mode administration</p>
+      <h1 id="admin-title">Interface admin</h1>
     </div>
-    <button type="button" class="admin-page__home" on:click={onOpenHomePage}>Retour accueil</button>
+    <div class="admin-header-actions">
+      {#if isConnected}
+        <span class="admin-badge admin-badge--connected" aria-live="polite">
+          <span class="admin-badge__dot" aria-hidden="true"></span>
+          API connectee
+        </span>
+        <button type="button" class="admin-btn ghost" on:click={handleDisconnect}>
+          Deconnexion
+        </button>
+      {/if}
+      <button type="button" class="admin-btn ghost" on:click={onOpenHomePage}>
+        ← Accueil
+      </button>
+    </div>
   </header>
 
-  <div class="admin-auth">
-    <label for="admin-key">Cle API admin</label>
-    <input
-      id="admin-key"
-      type="password"
-      bind:value={adminKey}
-      placeholder="change-me-in-production"
-      autocomplete="off"
-    />
-    <button type="button" on:click={handleConnect} disabled={isLoading}>
-      {isLoading ? 'Connexion...' : 'Charger les donnees'}
-    </button>
-  </div>
-
-  {#if errorMessage}
-    <p class="admin-feedback admin-feedback--error" role="alert">{errorMessage}</p>
-  {/if}
-
+  <!-- ── Banner feedback auto-dismiss ── -->
   {#if feedback}
-    <p class="admin-feedback" role="status">{feedback}</p>
+    <p
+      class="admin-feedback"
+      class:admin-feedback--error={feedbackIsError}
+      role={feedbackIsError ? 'alert' : 'status'}
+    >
+      {feedback}
+    </p>
   {/if}
 
-  {#if isConnected}
-    <div class="admin-grid">
-      <section class="admin-card">
-        <h2>Projets existants</h2>
-        {#if projects.length === 0}
-          <p>Aucun projet en base.</p>
-        {:else}
-          <ul class="admin-projects-list">
-            {#each projects as project}
-              <li>
-                <div>
-                  <strong>{project.name}</strong>
-                  <p>{project.type} · {project.date}</p>
-                </div>
-                <div class="admin-row-actions">
-                  <button type="button" on:click={() => handleEditProject(project)}>Editer</button>
-                  <button type="button" class="danger" on:click={() => handleDeleteProject(project.id)}>
-                    Supprimer
-                  </button>
-                </div>
-              </li>
-            {/each}
-          </ul>
-        {/if}
-      </section>
-
-      <section class="admin-card">
-        <h2>{editingProjectId ? 'Modifier le projet' : 'Creer un projet'}</h2>
-        <div class="admin-form">
-          <label>
-            Date
-            <input type="text" bind:value={projectForm.date} placeholder="03/2026" />
-          </label>
-          <label>
-            Nom
-            <input type="text" bind:value={projectForm.name} placeholder="Nom du projet" />
-          </label>
-          <label>
-            Type
-            <input type="text" bind:value={projectForm.type} placeholder="Svelte + Laravel" />
-          </label>
-          <label class="full">
-            Resume
-            <textarea rows="4" bind:value={projectForm.summary}></textarea>
-          </label>
-          <label>
-            URL live
-            <input type="url" bind:value={projectForm.liveUrl} placeholder="https://..." />
-          </label>
-          <label>
-            URL source
-            <input type="url" bind:value={projectForm.sourceUrl} placeholder="https://github.com/..." />
-          </label>
-          <label>
-            Demo mode
-            <input type="text" bind:value={projectForm.demoMode} placeholder="live | internal | sandbox" />
-          </label>
-          <label>
-            Demo game
-            <input type="text" bind:value={projectForm.demoGame} placeholder="mini-reflex" />
-          </label>
-          <label>
-            Demo path
-            <input type="text" bind:value={projectForm.demoPath} placeholder="/game" />
-          </label>
-          <label>
-            Demo URL
-            <input type="url" bind:value={projectForm.demoUrl} placeholder="https://..." />
-          </label>
-        </div>
-
-        <div class="admin-row-actions admin-row-actions--bottom">
-          <button type="button" on:click={handleSubmitProject} disabled={isSubmitting}>
-            {isSubmitting ? 'Sauvegarde...' : editingProjectId ? 'Mettre a jour' : 'Creer'}
-          </button>
-          <button type="button" class="ghost" on:click={resetForm}>Reinitialiser</button>
-        </div>
-      </section>
+  <!-- ── Authentification ── -->
+  {#if !isConnected}
+    <div class="admin-auth-panel">
+      <p class="admin-auth-panel__label">Entrez votre cle <code>x-admin-key</code> pour acceder aux routes protegees.</p>
+      <div class="admin-auth-panel__row">
+        <input
+          id="admin-key"
+          type="password"
+          bind:value={adminKey}
+          placeholder="Cle API admin"
+          autocomplete="off"
+          on:keydown={(e) => e.key === 'Enter' && handleConnect()}
+        />
+        <button type="button" class="admin-btn primary" on:click={handleConnect} disabled={isLoading}>
+          {isLoading ? 'Verification...' : 'Connexion'}
+        </button>
+      </div>
     </div>
 
-    <section class="admin-card admin-card--contacts">
-      <h2>Messages de contact recents</h2>
-      {#if messages.length === 0}
-        <p>Aucun message pour le moment.</p>
-      {:else}
-        <div class="admin-messages">
-          {#each messages as message}
-            <article>
-              <header>
-                <strong>{message.name}</strong>
-                <span>{message.email}</span>
-                <time>{message.createdAt}</time>
-              </header>
-              <p>{message.message}</p>
-            </article>
-          {/each}
-        </div>
-      {/if}
-    </section>
+  {:else}
+
+    <!-- ── Onglets ── -->
+    <nav class="admin-tabs" aria-label="Sections admin">
+      <button
+        type="button"
+        class="admin-tab"
+        class:is-active={activeTab === 'projects'}
+        on:click={() => (activeTab = 'projects')}
+      >
+        Projets
+        <span class="admin-tab__count">{projects.length}</span>
+      </button>
+      <button
+        type="button"
+        class="admin-tab"
+        class:is-active={activeTab === 'messages'}
+        on:click={() => (activeTab = 'messages')}
+      >
+        Messages
+        <span class="admin-tab__count">{messages.length}</span>
+      </button>
+      <button
+        type="button"
+        class="admin-tab admin-tab--refresh"
+        on:click={loadAdminData}
+        disabled={isLoading}
+        aria-label="Rafraichir les donnees"
+      >
+        {isLoading ? '...' : '↺'}
+      </button>
+    </nav>
+
+    <!-- ── Onglet Projets ── -->
+    {#if activeTab === 'projects'}
+      <div class="admin-grid">
+
+        <!-- Liste -->
+        <section class="admin-card" aria-label="Liste des projets">
+          {#if projects.length === 0}
+            <p class="admin-empty">Aucun projet en base.</p>
+          {:else}
+            <ul class="admin-projects-list">
+              {#each projects as project}
+                <li class:is-editing={editingProjectId === project.id}>
+                  <div class="admin-project-info">
+                    <strong>{project.name}</strong>
+                    <span class="admin-project-meta">{project.type} · {project.date}</span>
+                  </div>
+                  <div class="admin-row-actions">
+                    <button
+                      type="button"
+                      class="admin-btn secondary"
+                      on:click={() => handleEditProject(project)}
+                    >
+                      {editingProjectId === project.id ? '✎ En cours' : 'Editer'}
+                    </button>
+                    <button
+                      type="button"
+                      class="admin-btn danger"
+                      on:click={() => handleDeleteProject(project.id, project.name)}
+                    >
+                      ✕
+                    </button>
+                  </div>
+                </li>
+              {/each}
+            </ul>
+          {/if}
+        </section>
+
+        <!-- Formulaire création / édition -->
+        <section class="admin-card" aria-label={editingProjectId ? 'Modifier le projet' : 'Creer un projet'}>
+          <div class="admin-card__heading">
+            <h2>{editingProjectId ? 'Modifier' : 'Nouveau projet'}</h2>
+            {#if editingProjectId}
+              <span class="admin-edit-hint">Echap pour annuler</span>
+            {/if}
+          </div>
+
+          <div class="admin-form">
+            <label>
+              <span>Date <abbr title="obligatoire">*</abbr></span>
+              <input type="text" bind:value={projectForm.date} placeholder="03/2026" />
+            </label>
+            <label>
+              <span>Nom <abbr title="obligatoire">*</abbr></span>
+              <input type="text" bind:value={projectForm.name} placeholder="Nom du projet" />
+            </label>
+            <label>
+              <span>Type <abbr title="obligatoire">*</abbr></span>
+              <input type="text" bind:value={projectForm.type} placeholder="Svelte + Laravel" />
+            </label>
+            <label class="full">
+              <span>Resume <abbr title="obligatoire">*</abbr></span>
+              <textarea rows="3" bind:value={projectForm.summary}></textarea>
+            </label>
+            <label>
+              <span>URL source <abbr title="obligatoire">*</abbr></span>
+              <input type="url" bind:value={projectForm.sourceUrl} placeholder="https://github.com/..." />
+            </label>
+            <label>
+              <span>URL live</span>
+              <input type="url" bind:value={projectForm.liveUrl} placeholder="https://..." />
+            </label>
+            <label class="full">
+              <span>Image (path public)</span>
+              <input type="text" bind:value={projectForm.imageUrl} placeholder="/images/projects/MonProjet.png" />
+            </label>
+            <label>
+              <span>Demo mode</span>
+              <input type="text" bind:value={projectForm.demoMode} placeholder="live | internal" />
+            </label>
+            <label>
+              <span>Demo path</span>
+              <input type="text" bind:value={projectForm.demoPath} placeholder="/game" />
+            </label>
+            <label>
+              <span>Demo URL</span>
+              <input type="url" bind:value={projectForm.demoUrl} placeholder="https://..." />
+            </label>
+            <label>
+              <span>Demo game</span>
+              <input type="text" bind:value={projectForm.demoGame} placeholder="mini-reflex" />
+            </label>
+          </div>
+
+          <div class="admin-form-actions">
+            <button
+              type="button"
+              class="admin-btn primary"
+              on:click={handleSubmitProject}
+              disabled={isSubmitting}
+            >
+              {#if isSubmitting}
+                Sauvegarde...
+              {:else if editingProjectId}
+                Mettre a jour
+              {:else}
+                Creer le projet
+              {/if}
+            </button>
+            {#if editingProjectId}
+              <button type="button" class="admin-btn ghost" on:click={resetForm}>
+                Annuler
+              </button>
+            {:else}
+              <button type="button" class="admin-btn ghost" on:click={resetForm}>
+                Vider
+              </button>
+            {/if}
+          </div>
+        </section>
+
+      </div>
+    {/if}
+
+    <!-- ── Onglet Messages ── -->
+    {#if activeTab === 'messages'}
+      <section class="admin-card admin-card--full" aria-label="Messages de contact">
+        {#if messages.length === 0}
+          <p class="admin-empty">Aucun message pour le moment.</p>
+        {:else}
+          <div class="admin-messages">
+            {#each messages as message}
+              <article class="admin-message">
+                <header class="admin-message__header">
+                  <strong class="admin-message__name">{message.name}</strong>
+                  <a class="admin-message__email" href="mailto:{message.email}">{message.email}</a>
+                  <time class="admin-message__date">{message.createdAt}</time>
+                </header>
+                <p class="admin-message__body">{message.message}</p>
+              </article>
+            {/each}
+          </div>
+        {/if}
+      </section>
+    {/if}
+
   {/if}
+
 </section>

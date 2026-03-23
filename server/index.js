@@ -49,6 +49,7 @@ export async function createApp(options = {}) {
     const name = sanitizeText(req.body?.name)
     const type = sanitizeText(req.body?.type)
     const summary = sanitizeText(req.body?.summary)
+    const imageUrl = sanitizeText(req.body?.image) || null
     const liveUrl = sanitizeText(req.body?.links?.live) || null
     const sourceUrl = sanitizeText(req.body?.links?.source)
     const demoMode = sanitizeText(req.body?.demo?.mode) || null
@@ -65,13 +66,14 @@ export async function createApp(options = {}) {
       const result = await db.run(
         `
       INSERT INTO projects (
-        date, name, type, summary, live_url, source_url, demo_mode, demo_game, demo_path, demo_url
-      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        date, name, type, summary, image_url, live_url, source_url, demo_mode, demo_game, demo_path, demo_url
+      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
       `,
         date,
         name,
         type,
         summary,
+        imageUrl,
         liveUrl,
         sourceUrl,
         demoMode,
@@ -99,6 +101,7 @@ export async function createApp(options = {}) {
     const name = sanitizeText(req.body?.name)
     const type = sanitizeText(req.body?.type)
     const summary = sanitizeText(req.body?.summary)
+    const imageUrl = sanitizeText(req.body?.image) || null
     const liveUrl = sanitizeText(req.body?.links?.live) || null
     const sourceUrl = sanitizeText(req.body?.links?.source)
     const demoMode = sanitizeText(req.body?.demo?.mode) || null
@@ -114,7 +117,7 @@ export async function createApp(options = {}) {
     const result = await db.run(
       `
     UPDATE projects
-    SET date = ?, name = ?, type = ?, summary = ?, live_url = ?, source_url = ?, demo_mode = ?,
+    SET date = ?, name = ?, type = ?, summary = ?, image_url = ?, live_url = ?, source_url = ?, demo_mode = ?,
         demo_game = ?, demo_path = ?, demo_url = ?, updated_at = CURRENT_TIMESTAMP
     WHERE id = ?
     `,
@@ -122,6 +125,7 @@ export async function createApp(options = {}) {
       name,
       type,
       summary,
+      imageUrl,
       liveUrl,
       sourceUrl,
       demoMode,

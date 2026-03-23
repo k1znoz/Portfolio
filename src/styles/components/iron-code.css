@@ -1,0 +1,576 @@
+/* ==========================================================================
+   ThemeIronCode — "The Digital Blacksmith"
+   Custom effects that can't be expressed with Tailwind utilities alone.
+   Tailwind colours and spacing are applied inline in each Svelte component.
+   ========================================================================== */
+
+/* --------------------------------------------------------------------------
+   Global utilities
+   -------------------------------------------------------------------------- */
+
+/* Molten text glow — used on primary hero headline */
+.molten-glow {
+  text-shadow: 0 0 15px rgba(255, 87, 26, 0.6);
+}
+
+/* Ambient heat shadow — used on elevated cards */
+.heat-shadow {
+  box-shadow: 0 0 40px rgba(255, 181, 158, 0.05);
+}
+
+/* Brushed-metal noise overlay — applied to surface_bright containers */
+.brushed-metal {
+  background-image: linear-gradient(
+    45deg,
+    rgba(255, 255, 255, 0.02) 25%,
+    transparent 25%,
+    transparent 50%,
+    rgba(255, 255, 255, 0.02) 50%,
+    rgba(255, 255, 255, 0.02) 75%,
+    transparent 75%,
+    transparent
+  );
+  background-size: 4px 4px;
+}
+
+/* Focus glow for form inputs */
+.iron-input:focus {
+  border-color: #ffb59e;
+  box-shadow: inset 0 0 6px rgba(255, 181, 158, 0.15);
+  outline: none;
+}
+
+/* --------------------------------------------------------------------------
+   TopAppBar
+   -------------------------------------------------------------------------- */
+
+.iron-topbar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 50;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  height: 5rem;
+  padding: 0 2rem;
+  background-color: #131313;
+  border-bottom: 4px solid #5c4037;
+  box-shadow: 0 0 20px rgba(255, 87, 26, 0.1);
+  font-family: 'Space Grotesk', sans-serif;
+  text-transform: uppercase;
+  letter-spacing: -0.02em;
+}
+
+.iron-topbar__logo {
+  font-size: 1.5rem;
+  font-weight: 900;
+  color: #ffb59e;
+  letter-spacing: -0.05em;
+}
+
+.iron-topbar__nav {
+  display: flex;
+  gap: 2rem;
+  align-items: center;
+}
+
+.iron-topbar__nav-link {
+  color: #c8c6c6;
+  font-size: 1.125rem;
+  font-weight: 700;
+  padding-bottom: 0.25rem;
+  transition: color 0.3s, background-color 0.3s;
+  text-decoration: none;
+}
+
+.iron-topbar__nav-link:hover {
+  color: #ffb59e;
+  background-color: #201f1f;
+}
+
+.iron-topbar__nav-link.is-active {
+  color: #ff571a;
+  border-bottom: 2px solid #ff571a;
+}
+
+.iron-topbar__cta {
+  background-color: #ff571a;
+  color: #521300;
+  padding: 0.5rem 1.5rem;
+  font-weight: 900;
+  letter-spacing: 0.1em;
+  font-size: 0.875rem;
+  border: none;
+  cursor: pointer;
+  transition: filter 0.2s, transform 0.1s;
+}
+
+.iron-topbar__cta:hover {
+  filter: brightness(1.1);
+}
+
+.iron-topbar__cta:active {
+  transform: scale(0.97);
+}
+
+/* --------------------------------------------------------------------------
+   Hero
+   -------------------------------------------------------------------------- */
+
+.iron-hero {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-start;
+  padding: 6rem 2rem 2rem;
+  max-width: 1200px;
+  margin: 0 auto;
+  position: relative;
+  overflow: hidden;
+}
+
+.iron-hero__ambient {
+  position: absolute;
+  left: -5rem;
+  top: 25%;
+  width: 24rem;
+  height: 24rem;
+  background-color: rgba(255, 87, 26, 0.05);
+  filter: blur(120px);
+  border-radius: 9999px;
+  pointer-events: none;
+}
+
+.iron-hero__headline {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: clamp(3rem, 8vw, 6rem);
+  line-height: 0.9;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: -0.02em;
+  max-width: 56rem;
+  margin-bottom: 2rem;
+}
+
+.iron-hero__headline-accent {
+  color: #ff571a;
+  font-style: italic;
+  display: block;
+}
+
+.iron-hero__headline-main {
+  color: #e5e2e1;
+}
+
+/* --------------------------------------------------------------------------
+   Stats Bar
+   -------------------------------------------------------------------------- */
+
+.iron-stats {
+  background-color: #0e0e0e;
+  border-top: 4px solid #5c4037;
+  border-bottom: 4px solid #5c4037;
+  padding: 4rem 2rem;
+}
+
+.iron-stats__grid {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 3rem;
+}
+
+@media (min-width: 768px) {
+  .iron-stats__grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+.iron-stats__item {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+@media (max-width: 767px) {
+  .iron-stats__item {
+    align-items: center;
+  }
+}
+
+.iron-stats__item + .iron-stats__item {
+  border-top: 2px solid #5c4037;
+  padding-top: 3rem;
+}
+
+@media (min-width: 768px) {
+  .iron-stats__item + .iron-stats__item {
+    border-top: none;
+    border-left: 2px solid #5c4037;
+    padding-top: 0;
+    padding-left: 3rem;
+  }
+}
+
+.iron-stats__value {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 3.75rem;
+  font-weight: 900;
+  color: #ffb59e;
+  transition: color 0.2s;
+}
+
+.iron-stats__item:hover .iron-stats__value {
+  color: #ff571a;
+}
+
+.iron-stats__label {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 0.75rem;
+  color: #ad897e;
+  letter-spacing: 0.15em;
+  margin-top: 0.5rem;
+  font-style: italic;
+  text-transform: uppercase;
+}
+
+/* --------------------------------------------------------------------------
+   Project Grid
+   -------------------------------------------------------------------------- */
+
+.iron-projects {
+  padding: 8rem 2rem;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.iron-projects__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  margin-bottom: 4rem;
+  padding-bottom: 2rem;
+  border-bottom: 4px solid #5c4037;
+}
+
+.iron-project-card {
+  background-color: #201f1f;
+  border: 4px solid #5c4037;
+  position: relative;
+  overflow: hidden;
+  transition: border-color 0.2s;
+}
+
+.iron-project-card:hover {
+  border-color: #ff571a;
+}
+
+.iron-project-card__img-wrapper {
+  height: 16rem;
+  background-color: #393939;
+  overflow: hidden;
+  position: relative;
+}
+
+.iron-project-card__img-wrapper img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  filter: grayscale(1);
+  transform: scale(1.05);
+  transition: filter 0.5s, transform 0.5s;
+}
+
+.iron-project-card:hover .iron-project-card__img-wrapper img {
+  filter: grayscale(0);
+  transform: scale(1);
+}
+
+.iron-project-card__gradient {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to top, #201f1f, transparent 60%);
+}
+
+.iron-project-card__body {
+  padding: 2rem;
+}
+
+.iron-project-card__tag {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 0.625rem;
+  color: #ffb59e;
+  border: 1px solid #ffb59e;
+  padding: 0.25rem 0.5rem;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.iron-project-card__link {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 0.75rem;
+  color: #ff571a;
+  font-weight: 900;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  text-decoration: none;
+  text-transform: uppercase;
+  transition: gap 0.2s;
+}
+
+.iron-project-card__link:hover {
+  gap: 0.75rem;
+}
+
+/* --------------------------------------------------------------------------
+   Skill Grades
+   -------------------------------------------------------------------------- */
+
+.iron-skills {
+  background-color: #1c1b1b;
+  padding: 8rem 2rem;
+  overflow: hidden;
+}
+
+.iron-skills__inner {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.iron-skill-card {
+  background-color: #0e0e0e;
+  border: 2px solid #5c4037;
+  padding: 2rem;
+  position: relative;
+  transition: background-color 0.2s;
+}
+
+.iron-skill-card:hover {
+  background-color: #393939;
+}
+
+.iron-skill-card__serial {
+  position: absolute;
+  top: 0;
+  right: 0;
+  padding: 1rem;
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 0.625rem;
+  color: #ad897e;
+  text-transform: uppercase;
+}
+
+.iron-skill-card__icon {
+  width: 3rem;
+  height: 3rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: rgba(255, 87, 26, 0.1);
+  margin-bottom: 1.5rem;
+}
+
+.iron-skill-card__bar-track {
+  margin-top: 1.5rem;
+  width: 100%;
+  height: 4px;
+  background-color: #5c4037;
+}
+
+.iron-skill-card__bar-fill {
+  height: 100%;
+  background-color: #ff571a;
+}
+
+/* --------------------------------------------------------------------------
+   Timeline
+   -------------------------------------------------------------------------- */
+
+.iron-timeline {
+  padding: 8rem 2rem;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.iron-timeline__title {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 2.25rem;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: -0.02em;
+  color: #e5e2e1;
+  margin-bottom: 4rem;
+  border-left: 8px solid #ff571a;
+  padding-left: 2rem;
+}
+
+.iron-timeline__track {
+  position: relative;
+}
+
+.iron-timeline__axis {
+  position: absolute;
+  left: 50%;
+  top: 0;
+  bottom: 0;
+  width: 4px;
+  background-color: #5c4037;
+  transform: translateX(-50%);
+  display: none;
+}
+
+@media (min-width: 768px) {
+  .iron-timeline__axis {
+    display: block;
+  }
+}
+
+.iron-timeline__dot {
+  position: absolute;
+  left: 50%;
+  width: 1.5rem;
+  height: 1.5rem;
+  border: 4px solid #131313;
+  transform: translateX(-50%);
+  display: none;
+}
+
+@media (min-width: 768px) {
+  .iron-timeline__dot {
+    display: block;
+  }
+}
+
+.iron-timeline__dot--active {
+  background-color: #ff571a;
+}
+
+.iron-timeline__dot--past {
+  background-color: #ad897e;
+}
+
+.iron-timeline__card {
+  background-color: #201f1f;
+  padding: 2rem;
+}
+
+.iron-timeline__card--left {
+  border-right: 4px solid #ff571a;
+}
+
+.iron-timeline__card--past-left {
+  border-right: 4px solid #ad897e;
+}
+
+.iron-timeline__card--right {
+  border-left: 4px solid #ad897e;
+}
+
+/* --------------------------------------------------------------------------
+   Contact Forge
+   -------------------------------------------------------------------------- */
+
+.iron-contact {
+  padding: 8rem 2rem;
+  background-color: #0e0e0e;
+}
+
+.iron-contact__inner {
+  max-width: 1000px;
+  margin: 0 auto;
+}
+
+.iron-contact__sheet {
+  background-color: #131313;
+  border: 4px solid #5c4037;
+  padding: 0.25rem;
+}
+
+@media (min-width: 768px) {
+  .iron-contact__sheet {
+    padding: 3rem;
+  }
+}
+
+.iron-contact__inner-border {
+  border: 2px solid rgba(92, 64, 55, 0.3);
+  padding: 2rem;
+}
+
+.iron-contact__submit {
+  width: 100%;
+  background-color: #ff571a;
+  color: #521300;
+  font-family: 'Space Grotesk', sans-serif;
+  font-weight: 900;
+  padding: 1.5rem 2rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  transition: filter 0.2s;
+}
+
+.iron-contact__submit:hover {
+  filter: brightness(1.25);
+}
+
+/* --------------------------------------------------------------------------
+   Footer
+   -------------------------------------------------------------------------- */
+
+.iron-footer {
+  background-color: #0e0e0e;
+  border-top: 4px solid #5c4037;
+  padding: 3rem 2rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.5rem;
+  font-family: 'Inter', sans-serif;
+  font-size: 0.625rem;
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+}
+
+@media (min-width: 768px) {
+  .iron-footer {
+    flex-direction: row;
+    justify-content: space-between;
+  }
+}
+
+.iron-footer__copy {
+  color: #c8c6c6;
+  font-weight: 900;
+}
+
+.iron-footer__links {
+  display: flex;
+  gap: 2rem;
+}
+
+.iron-footer__link {
+  color: #ad897e;
+  text-decoration: none;
+  transition: color 0.2s;
+}
+
+.iron-footer__link:hover {
+  color: #e5e2e1;
+}
+
+.iron-footer__version {
+  color: #ad897e;
+  font-size: 0.5rem;
+  opacity: 0.4;
+}

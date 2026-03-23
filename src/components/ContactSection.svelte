@@ -115,7 +115,7 @@
 
     {#if isSent}
       <p class="contact-feedback" role="status" aria-live="polite">
-        Message bien recu. Je te recontacte rapidement.
+        Message bien recu. Je vous recontacte rapidement.
       </p>
     {/if}
   </form>

@@ -18,19 +18,26 @@
   },
   "devDependencies": {
     "@sveltejs/vite-plugin-svelte": "^6.2.1",
+    "@tailwindcss/container-queries": "^0.1.1",
+    "@tailwindcss/forms": "^0.5.11",
+    "@tailwindcss/postcss": "^4.2.2",
     "@testing-library/jest-dom": "^6.9.1",
     "@testing-library/svelte": "^5.3.1",
     "@vitest/coverage-v8": "^4.1.0",
+    "autoprefixer": "^10.4.27",
     "jsdom": "^29.0.0",
+    "postcss": "^8.5.8",
     "prettier": "^3.8.1",
     "prettier-plugin-svelte": "^3.5.1",
     "supertest": "^7.2.2",
     "svelte": "^5.45.2",
+    "tailwindcss": "^3.4.17",
     "vite": "^7.3.1",
     "vitest": "^4.1.0"
   },
   "dependencies": {
     "express": "^5.2.1",
+    "html2canvas": "^1.4.1",
     "sqlite": "^5.1.1",
     "sqlite3": "^6.0.1"
   }

@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="fr"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>K1ZNOZ | Portfolio Fullstack Svelte &amp; Laravel</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&amp;family=Inter:wght@300;400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "surface-container": "#201f1f",
+              "tertiary": "#fff6e4",
+              "surface": "#131313",
+              "surface-container-highest": "#353534",
+              "on-secondary": "#510074",
+              "on-background": "#e5e2e1",
+              "inverse-surface": "#e5e2e1",
+              "tertiary-container": "#fed83a",
+              "surface-variant": "#353534",
+              "on-tertiary-container": "#725e00",
+              "primary-fixed": "#74f5ff",
+              "inverse-on-surface": "#313030",
+              "on-primary": "#00363a",
+              "secondary-fixed": "#f6d9ff",
+              "primary-fixed-dim": "#00dbe7",
+              "surface-bright": "#3a3939",
+              "background": "#131313",
+              "primary-container": "#00f2ff",
+              "on-surface-variant": "#b9cacb",
+              "error-container": "#93000a",
+              "on-error": "#690005",
+              "outline": "#849495",
+              "on-secondary-container": "#e5a9ff",
+              "surface-container-low": "#1c1b1b",
+              "on-tertiary": "#3b2f00",
+              "on-primary-fixed-variant": "#004f54",
+              "on-tertiary-fixed-variant": "#554500",
+              "on-primary-fixed": "#002022",
+              "inverse-primary": "#00696f",
+              "tertiary-fixed": "#ffe173",
+              "on-surface": "#e5e2e1",
+              "secondary-fixed-dim": "#e9b3ff",
+              "surface-container-high": "#2a2a2a",
+              "on-tertiary-fixed": "#221b00",
+              "secondary": "#e9b3ff",
+              "on-secondary-fixed": "#310048",
+              "on-primary-container": "#006a71",
+              "primary": "#e1fdff",
+              "outline-variant": "#3a494b",
+              "on-error-container": "#ffdad6",
+              "surface-tint": "#00dbe7",
+              "surface-dim": "#131313",
+              "tertiary-fixed-dim": "#e8c423",
+              "surface-container-lowest": "#0e0e0e",
+              "error": "#ffb4ab",
+              "on-secondary-fixed-variant": "#7200a3",
+              "secondary-container": "#7d01b1"
+            },
+            fontFamily: {
+              "headline": ["Space Grotesk"],
+              "body": ["Inter"],
+              "label": ["Inter"]
+            },
+            borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+          },
+        },
+      }
+    </script>
+<style>
+        body {
+            background-color: #0A0A0A;
+            color: #e5e2e1;
+            font-family: 'Inter', sans-serif;
+        }
+        .glass-panel {
+            background: rgba(28, 27, 27, 0.65);
+            backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+        .glass-panel:hover {
+            backdrop-filter: blur(24px);
+            border-color: rgba(0, 242, 255, 0.3);
+        }
+        .hero-glow-cyan {
+            background: radial-gradient(circle at 0% 0%, rgba(0, 242, 255, 0.15) 0%, transparent 50%);
+        }
+        .hero-glow-purple {
+            background: radial-gradient(circle at 100% 100%, rgba(191, 90, 242, 0.1) 0%, transparent 50%);
+        }
+        .code-pulse {
+            width: 8px;
+            height: 8px;
+            background-color: #00F2FF;
+            border-radius: 50%;
+            display: inline-block;
+            box-shadow: 0 0 8px #00F2FF;
+            animation: pulse 2s infinite;
+        }
+        @keyframes pulse {
+            0% { transform: scale(0.95); opacity: 0.7; }
+            70% { transform: scale(1.1); opacity: 1; box-shadow: 0 0 12px #00F2FF; }
+            100% { transform: scale(0.95); opacity: 0.7; }
+        }
+        .text-gradient {
+            background: linear-gradient(135deg, #00F2FF 0%, #BF5AF2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+    </style>
+</head>
+<body class="selection:bg-primary-container selection:text-on-primary-container">
+<!-- TopNavBar -->
+<nav class="fixed top-0 w-full z-50 bg-neutral-950/65 backdrop-blur-xl border-b border-white/10 shadow-[0_0_20px_rgba(0,242,255,0.06)]">
+<div class="flex justify-between items-center max-w-7xl mx-auto px-8 h-20">
+<div class="text-2xl font-black tracking-tighter text-cyan-400 dark:text-cyan-400 font-['Space_Grotesk']">K1ZNOZ</div>
+<div class="hidden md:flex items-center gap-10 font-['Space_Grotesk'] tracking-tight text-sm uppercase font-bold">
+<a class="text-cyan-400 border-b-2 border-cyan-400 pb-1" href="#projects">Projects</a>
+<a class="text-neutral-400 hover:text-white transition-colors" href="#expertise">Expertise</a>
+<a class="text-neutral-400 hover:text-white transition-colors" href="#cv">CV</a>
+<a class="text-neutral-400 hover:text-white transition-colors" href="#contact">Contact</a>
+</div>
+<button class="bg-gradient-to-r from-cyan-400 to-purple-500 text-neutral-950 font-bold px-6 py-2.5 rounded-full text-sm hover:scale-105 transition-transform duration-300">
+                Get in Touch
+            </button>
+</div>
+</nav>
+<main class="relative pt-20">
+<!-- Background Ambient Glows -->
+<div class="fixed inset-0 pointer-events-none hero-glow-cyan"></div>
+<div class="fixed inset-0 pointer-events-none hero-glow-purple"></div>
+<!-- Hero Section -->
+<section class="max-w-7xl mx-auto px-8 py-24 md:py-40 relative">
+<div class="flex flex-col md:flex-row items-center gap-16">
+<div class="flex-1 space-y-8">
+<div class="inline-flex items-center gap-3 px-4 py-2 glass-panel rounded-full text-xs font-bold uppercase tracking-widest text-cyan-400">
+<span class="code-pulse"></span>
+                        Available for new projects
+                    </div>
+<h1 class="font-headline text-5xl md:text-7xl font-bold leading-tight tracking-tighter">
+                        Developpeur Web &amp; <br/>
+<span class="text-gradient">Web Mobile</span> diplome.
+                    </h1>
+<p class="font-body text-xl text-neutral-400 max-w-2xl leading-relaxed">
+                        Oriente interfaces utiles et solides. Spécialisé dans l'écosystème <span class="text-white font-medium">Svelte</span> et <span class="text-white font-medium">Laravel</span> pour des expériences digitales fluides.
+                    </p>
+<div class="flex gap-4">
+<button class="bg-primary-container text-on-primary-container font-bold px-8 py-4 rounded-xl hover:shadow-[0_0_20px_rgba(0,242,255,0.4)] transition-all">
+                            Voir les projets
+                        </button>
+<button class="glass-panel text-white font-bold px-8 py-4 rounded-xl border border-white/10 hover:bg-white/5 transition-all">
+                            Me contacter
+                        </button>
+</div>
+</div>
+<div class="flex-1 w-full max-w-md">
+<div class="aspect-square glass-panel rounded-3xl p-8 relative overflow-hidden group">
+<img alt="Code on screen" class="w-full h-full object-cover rounded-2xl opacity-50 group-hover:opacity-80 transition-opacity duration-500" data-alt="Close up of modern web development code on a dark screen" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAXRXaP6hTitPCLXjjFMAHBn4lT3DfgcnQK9X-P4GE2n5i4xRCe-tmn9_4tkIhK1zz3HOC-vWz6tuC2OUb5SfIuPqUF9mWhdNdXn-cz1dKkiWRsxRkjT3T-9Bwe5LpohKf071SPt7pQOPkvUAO3qXrexowFiXrvKVdSK_65VJ3GvtmGFXzUozanm1VbD9wMVHWI-2YSRKk0ky9FwwS6Z3IfPduQaz1JDxQTDdSeCi_Yb2xnrwmpqZsadiFAFOEFvoDljUG62usL"/>
+<div class="absolute inset-0 bg-gradient-to-t from-background via-transparent to-transparent"></div>
+<div class="absolute bottom-12 left-12 right-12">
+<div class="text-xs text-cyan-400 font-bold mb-2 uppercase tracking-widest">Stack Actuelle</div>
+<div class="text-2xl font-bold font-headline">SvelteKit + Laravel</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Stats Section -->
+<section class="max-w-7xl mx-auto px-8 py-12">
+<div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+<div class="glass-panel p-8 rounded-2xl flex items-center gap-6">
+<div class="w-12 h-12 rounded-lg bg-cyan-400/10 flex items-center justify-center text-cyan-400">
+<span class="material-symbols-outlined">school</span>
+</div>
+<div>
+<div class="text-2xl font-bold font-headline">2025</div>
+<div class="text-sm text-neutral-500 uppercase tracking-wide">Diplome DWWM</div>
+</div>
+</div>
+<div class="glass-panel p-8 rounded-2xl flex items-center gap-6">
+<div class="w-12 h-12 rounded-lg bg-purple-500/10 flex items-center justify-center text-purple-400">
+<span class="material-symbols-outlined">work</span>
+</div>
+<div>
+<div class="text-2xl font-bold font-headline">6+</div>
+<div class="text-sm text-neutral-500 uppercase tracking-wide">Expériences Pro</div>
+</div>
+</div>
+<div class="glass-panel p-8 rounded-2xl flex items-center gap-6">
+<div class="w-12 h-12 rounded-lg bg-cyan-400/10 flex items-center justify-center text-cyan-400">
+<span class="material-symbols-outlined">translate</span>
+</div>
+<div>
+<div class="text-2xl font-bold font-headline">C1 Anglais</div>
+<div class="text-sm text-neutral-500 uppercase tracking-wide">Bilingue</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Projects Section -->
+<section class="max-w-7xl mx-auto px-8 py-32" id="projects">
+<div class="flex justify-between items-end mb-16">
+<div>
+<h2 class="text-4xl md:text-5xl font-bold font-headline mb-4">Selection de projets</h2>
+<p class="text-neutral-500 max-w-md">Exploration technique à travers des applications web réelles et expérimentales.</p>
+</div>
+<div class="hidden md:block h-px flex-1 bg-white/10 mx-12 mb-6"></div>
+<span class="text-cyan-400 font-mono text-sm tracking-tighter">[ 06 PROJETS ]</span>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+<!-- Card 1 -->
+<div class="glass-panel p-6 rounded-2xl group transition-all duration-500">
+<div class="aspect-video mb-6 rounded-xl overflow-hidden relative">
+<img alt="Coutellerie project" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" data-alt="Professional knife craftsmanship website interface mockup" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBLewNqaAoz2fH_7cKGWxXD7cqyeHVu9YIXTWXEnAdhFkkmfeWTsXzxcuj5SSb0c-pcpr03-69ILQgCgRk928EWBspYBG_Ayqi6d57AZD6QzfYI805ZjQnryBcIX2-vB71bu73zUvVViZIFqIn_CDf570WuEe8Nu_g5jxHjV5mzAXaof-2grPpF60-JxX-T2b7mbpnkRcjRXjpnz89D_VZYvlMa2CYKXvgMQLtknD_iC742DiPblDV3y-2pc8vyq2Ay3cQfzMtA"/>
+<div class="absolute inset-0 bg-neutral-950/40 group-hover:bg-transparent transition-all"></div>
+</div>
+<h3 class="text-xl font-bold mb-3 flex items-center justify-between">
+                        Coutellerie-svelte-laravel
+                        <span class="material-symbols-outlined text-cyan-400 group-hover:translate-x-1 transition-transform">arrow_outward</span>
+</h3>
+<div class="flex gap-2 mb-4">
+<span class="px-3 py-1 bg-white/5 rounded-full text-[10px] uppercase font-bold tracking-widest text-neutral-400 border border-white/5">Svelte</span>
+<span class="px-3 py-1 bg-white/5 rounded-full text-[10px] uppercase font-bold tracking-widest text-neutral-400 border border-white/5">Laravel</span>
+</div>
+</div>
+<!-- Card 2 -->
+<div class="glass-panel p-6 rounded-2xl group transition-all duration-500">
+<div class="aspect-video mb-6 rounded-xl overflow-hidden relative">
+<img alt="MariageLV" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" data-alt="Elegant wedding planning application dashboard design" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBz-rEhJkvXHf-QfqpidPJm6dDhwufvu2cQvpdY0iXJJ76EvC858Z7jPP7wmYw1rS_yxf5Av50By7_sxZORxsE5b57iQeVbcmex8_PO8Z9aLdUMe8BvbsaqD40npCBOzHjuE_03Ln9XaYXRR0NIdsgcbXqfc8UMNvOtOrU78kc4aoZJays_N9OZQtCIcfsoocc0ynZO3ePlP8A33JTd-znvihiruJJEB0bX17IKGo84IhUv30ugqKnyl6mRE8Gz7idDKNw545Tm"/>
+<div class="absolute inset-0 bg-neutral-950/40 group-hover:bg-transparent transition-all"></div>
+</div>
+<h3 class="text-xl font-bold mb-3 flex items-center justify-between">
+                        MariageLV
+                        <span class="material-symbols-outlined text-cyan-400 group-hover:translate-x-1 transition-transform">arrow_outward</span>
+</h3>
+<div class="flex gap-2 mb-4">
+<span class="px-3 py-1 bg-white/5 rounded-full text-[10px] uppercase font-bold tracking-widest text-neutral-400 border border-white/5">UI/UX</span>
+<span class="px-3 py-1 bg-white/5 rounded-full text-[10px] uppercase font-bold tracking-widest text-neutral-400 border border-white/5">PHP</span>
+</div>
+</div>
+<!-- Card 3 -->
+<div class="glass-panel p-6 rounded-2xl group transition-all duration-500">
+<div class="aspect-video mb-6 rounded-xl overflow-hidden relative">
+<img alt="GrainesDeJardin" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" data-alt="Gardening and seed tracking application interface" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDbh50z3s3ZYxnJ3UP1vV3sefRWC3VXq9XahfuIAY7ZYp7aLcdEZ99eNQvCbDrUYR4ovpU-AddrCgFiboQCxbLKVrzUXIiI4XeYWjwajX5RyCSzcmxBZ5eamgmfvoEXXXy3ZXY-HAP4e0AtN6rx2xiL-i7-UP7OVW4sQm-GaBGJiJQpTOkMyssL7fuMUySijgNe7afDwzgN49Ch5ct0vsP9jn7ItNMBqn-y_dcpr7jojMyBzcvMOGCSMy4o8nEn2euuYtgLzJwg"/>
+<div class="absolute inset-0 bg-neutral-950/40 group-hover:bg-transparent transition-all"></div>
+</div>
+<h3 class="text-xl font-bold mb-3 flex items-center justify-between">
+                        GrainesDeJardin
+                        <span class="material-symbols-outlined text-cyan-400 group-hover:translate-x-1 transition-transform">arrow_outward</span>
+</h3>
+<div class="flex gap-2 mb-4">
+<span class="px-3 py-1 bg-white/5 rounded-full text-[10px] uppercase font-bold tracking-widest text-neutral-400 border border-white/5">Mobile</span>
+</div>
+</div>
+<!-- Card 4 -->
+<div class="glass-panel p-6 rounded-2xl group transition-all duration-500">
+<div class="aspect-video mb-6 rounded-xl overflow-hidden relative">
+<img alt="LivingSoils" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" data-alt="Ecological and soil monitoring dashboard visual" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDydzDO9VLNSuORv_I0wTJ9jHJmgoh9fCVq55jd-La63sj1ZewSiY29jiFccWT1n5ehHQok5tGo9pxzH9JnAeB-tqGcGbZpEiz8e5ob-Z14EBTFr-Qu_j_RB3JtQA0Jhfgo4sm6NgicsQZMxCOCsIilfgSXfBShfLRRv4YoKMoHyLXi76Tgh3AG1o8y9MkDLrGzKdb8P4WKWR-1Y01tJWY_N09jgq5ss5NYciVckIP3pSkNAMeYKYhww2XZa5JF1gvauDImSVUa"/>
+<div class="absolute inset-0 bg-neutral-950/40 group-hover:bg-transparent transition-all"></div>
+</div>
+<h3 class="text-xl font-bold mb-3 flex items-center justify-between">
+                        LivingSoils
+                        <span class="material-symbols-outlined text-cyan-400 group-hover:translate-x-1 transition-transform">arrow_outward</span>
+</h3>
+<div class="flex gap-2 mb-4">
+<span class="px-3 py-1 bg-white/5 rounded-full text-[10px] uppercase font-bold tracking-widest text-neutral-400 border border-white/5">Data Vis</span>
+</div>
+</div>
+<!-- Card 5 -->
+<div class="glass-panel p-6 rounded-2xl group transition-all duration-500">
+<div class="aspect-video mb-6 rounded-xl overflow-hidden relative">
+<img alt="Reflex Shot" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" data-alt="Action photography or training web app mockup" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDsrt7WCvTW8l3csfv97uqBcU1L4sw2kSLECzkFWuKvtgQOM6ATHX49zSopl7grzAy7dMr3trzxD62mmMmP_Q8nhKwkSQimgH9sZg-tPdSL-pqPzT-8-eWDFmPeFXnv_Klhk99GBI_JfrO4ietT3f3BYfK8hx8qQXYGVAj2Un9EuccVDrWxAZ3UVz5ICBml2iCRpGtgLMTSo4bRkZtefikZ5TtrRqTaNzXcm1tJxsyHrVtF1aGGlSNdu1LGv4EUqRHulzdWOaFV"/>
+<div class="absolute inset-0 bg-neutral-950/40 group-hover:bg-transparent transition-all"></div>
+</div>
+<h3 class="text-xl font-bold mb-3 flex items-center justify-between">
+                        Reflex Shot
+                        <span class="material-symbols-outlined text-cyan-400 group-hover:translate-x-1 transition-transform">arrow_outward</span>
+</h3>
+<div class="flex gap-2 mb-4">
+<span class="px-3 py-1 bg-white/5 rounded-full text-[10px] uppercase font-bold tracking-widest text-neutral-400 border border-white/5">JS Games</span>
+</div>
+</div>
+<!-- Card 6 -->
+<div class="glass-panel p-6 rounded-2xl group transition-all duration-500">
+<div class="aspect-video mb-6 rounded-xl overflow-hidden relative">
+<img alt="Lane Defender" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" data-alt="Cybersecurity or tower defense game interface" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCuXjWpO0ojZENqtNTC2qsAZouXvMIZgEVRXiuRJZLP4km3vZ3DZb20V6aG_QAiWRDfooKufYiLlo7pW57nxQLnPMroHcWFq5clQvjm0RGqt6LHcdciP3NALrM109a8Py1N4z0sM5gL-Zqto9UbadeeYk7pbMODQ6DnzT-xBXLOmsAxXXziOjE7HZam_9vrNKh4TNJ4Q-lUCnrkYhw_YSzA2uVYXiHeU5anIkSvJPDgGzmykt__FnF5Br2z1YSkjLWYhwXuXp9a"/>
+<div class="absolute inset-0 bg-neutral-950/40 group-hover:bg-transparent transition-all"></div>
+</div>
+<h3 class="text-xl font-bold mb-3 flex items-center justify-between">
+                        Lane Defender
+                        <span class="material-symbols-outlined text-cyan-400 group-hover:translate-x-1 transition-transform">arrow_outward</span>
+</h3>
+<div class="flex gap-2 mb-4">
+<span class="px-3 py-1 bg-white/5 rounded-full text-[10px] uppercase font-bold tracking-widest text-neutral-400 border border-white/5">Fullstack</span>
+</div>
+</div>
+</div>
+</section>
+<!-- CV Section -->
+<section class="max-w-7xl mx-auto px-8 py-24" id="cv">
+<div class="glass-panel p-12 rounded-3xl relative overflow-hidden flex flex-col md:flex-row items-center justify-between gap-12">
+<div class="absolute top-0 right-0 w-64 h-64 bg-purple-500/10 blur-[100px] -z-10"></div>
+<div class="space-y-6 flex-1 text-center md:text-left">
+<h2 class="text-4xl font-bold font-headline leading-tight">Un CV consultable <br/>sans casser la perf.</h2>
+<p class="text-neutral-400 text-lg">Parcourez mon historique technique directement en ligne ou téléchargez une version optimisée pour l'impression.</p>
+</div>
+<div class="flex flex-col sm:flex-row gap-4">
+<button class="bg-cyan-400 text-neutral-950 font-bold px-10 py-5 rounded-2xl hover:scale-105 transition-all">Ouvrir la page CV</button>
+<button class="glass-panel border border-white/10 px-10 py-5 rounded-2xl font-bold hover:bg-white/5 transition-all flex items-center justify-center gap-3">
+<span class="material-symbols-outlined">download</span>
+                        Telecharger le PDF
+                    </button>
+</div>
+</div>
+</section>
+<!-- About & Skills (Bento Style) -->
+<section class="max-w-7xl mx-auto px-8 py-32" id="expertise">
+<div class="grid grid-cols-1 md:grid-cols-12 gap-8">
+<!-- About -->
+<div class="md:col-span-7 glass-panel p-12 rounded-3xl relative">
+<h2 class="text-3xl font-bold font-headline mb-8">Parcours hybride</h2>
+<p class="text-neutral-400 text-lg leading-relaxed mb-6">
+                        Ancien professionnel du terrain, j'ai forgé ma rigueur dans le service avant de pivoter vers ma passion initiale : le développement web.
+                    </p>
+<div class="p-6 bg-cyan-400/5 border-l-4 border-cyan-400 rounded-r-xl italic text-neutral-300">
+                        "Du service à la rigueur terrain, puis le développement web : une évolution logique vers la construction de produits solides."
+                    </div>
+</div>
+<!-- Skills -->
+<div class="md:col-span-5 glass-panel p-12 rounded-3xl bg-gradient-to-br from-neutral-900 to-neutral-950">
+<h2 class="text-2xl font-bold font-headline mb-10">Expertise technique</h2>
+<div class="space-y-8">
+<div>
+<div class="flex justify-between items-center mb-4">
+<span class="text-white font-medium">Développement web et mobile</span>
+<span class="text-cyan-400 text-xs font-mono">Expert</span>
+</div>
+<div class="h-1.5 bg-white/5 rounded-full overflow-hidden">
+<div class="h-full bg-cyan-400 w-[90%]"></div>
+</div>
+</div>
+<div>
+<div class="flex justify-between items-center mb-4">
+<span class="text-white font-medium">Rigueur et adaptation</span>
+<span class="text-cyan-400 text-xs font-mono">Core</span>
+</div>
+<div class="h-1.5 bg-white/5 rounded-full overflow-hidden">
+<div class="h-full bg-purple-500 w-[95%]"></div>
+</div>
+</div>
+<div>
+<div class="flex justify-between items-center mb-4">
+<span class="text-white font-medium">Culture qualité</span>
+<span class="text-cyan-400 text-xs font-mono">Standard</span>
+</div>
+<div class="h-1.5 bg-white/5 rounded-full overflow-hidden">
+<div class="h-full bg-cyan-400 w-[85%]"></div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Contact Section -->
+<section class="max-w-7xl mx-auto px-8 py-32" id="contact">
+<div class="max-w-3xl mx-auto text-center mb-16">
+<h2 class="text-4xl md:text-5xl font-bold font-headline mb-6">Transformons une idée ambitieuse en produit concret.</h2>
+<p class="text-neutral-500">Besoin d'un développeur polyvalent pour votre prochain projet Svelte ou Laravel ? Parlons-en.</p>
+</div>
+<div class="glass-panel p-10 md:p-16 rounded-3xl max-w-4xl mx-auto">
+<form action="#" class="grid grid-cols-1 md:grid-cols-2 gap-8">
+<div class="space-y-6">
+<div>
+<label class="block text-xs font-bold uppercase tracking-widest text-neutral-500 mb-3">Nom complet</label>
+<input class="w-full bg-transparent border-b border-white/10 py-3 focus:outline-none focus:border-cyan-400 transition-colors text-white font-medium" placeholder="John Doe" type="text"/>
+</div>
+<div>
+<label class="block text-xs font-bold uppercase tracking-widest text-neutral-500 mb-3">Email</label>
+<input class="w-full bg-transparent border-b border-white/10 py-3 focus:outline-none focus:border-cyan-400 transition-colors text-white font-medium" placeholder="john@example.com" type="email"/>
+</div>
+</div>
+<div class="flex flex-col">
+<label class="block text-xs font-bold uppercase tracking-widest text-neutral-500 mb-3">Message</label>
+<textarea class="w-full bg-transparent border-b border-white/10 py-3 focus:outline-none focus:border-cyan-400 transition-colors text-white font-medium flex-1 resize-none" placeholder="Décrivez votre projet..." rows="4"></textarea>
+</div>
+<div class="md:col-span-2 flex justify-center pt-8">
+<button class="bg-gradient-to-r from-cyan-400 to-purple-500 text-neutral-950 font-black text-lg px-12 py-5 rounded-2xl hover:scale-105 transition-all shadow-[0_0_30px_rgba(0,242,255,0.2)]">
+                            Envoyer le message
+                        </button>
+</div>
+</form>
+</div>
+</section>
+</main>
+<!-- Footer -->
+<footer class="bg-neutral-950 w-full py-12 border-t border-white/5">
+<div class="flex flex-col md:flex-row justify-between items-center max-w-7xl mx-auto px-8 gap-6">
+<div class="flex flex-col items-center md:items-start gap-2">
+<div class="text-lg font-bold text-neutral-200">K1ZNOZ</div>
+<p class="font-['Inter'] text-sm leading-relaxed text-neutral-500">© 2024 K1ZNOZ. Built with Svelte &amp; Laravel.</p>
+</div>
+<div class="flex gap-8">
+<a class="text-neutral-500 hover:text-cyan-400 transition-colors duration-300 text-sm font-medium" href="#">GitHub</a>
+<a class="text-neutral-500 hover:text-cyan-400 transition-colors duration-300 text-sm font-medium" href="#">LinkedIn</a>
+<a class="text-neutral-500 hover:text-cyan-400 transition-colors duration-300 text-sm font-medium" href="#">Twitter</a>
+<a class="text-neutral-500 hover:text-cyan-400 transition-colors duration-300 text-sm font-medium" href="#">Email</a>
+</div>
+</div>
+</footer>
+</body></html>

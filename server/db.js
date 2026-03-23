@@ -9,6 +9,7 @@ function toDbProject(project) {
     name: project.name,
     type: project.type,
     summary: project.summary,
+    imageUrl: project.image ?? null,
     liveUrl: project.links?.live ?? null,
     sourceUrl: project.links?.source ?? null,
     demoMode: project.demo?.mode ?? null,
@@ -35,6 +36,7 @@ export async function createDatabase(options = {}) {
       name TEXT NOT NULL UNIQUE,
       type TEXT NOT NULL,
       summary TEXT NOT NULL,
+      image_url TEXT,
       live_url TEXT,
       source_url TEXT NOT NULL,
       demo_mode TEXT,
@@ -57,12 +59,19 @@ export async function createDatabase(options = {}) {
     );
   `)
 
+  // Lightweight migration for existing local databases created before image_url existed.
+  const projectColumns = await db.all('PRAGMA table_info(projects)')
+  const hasImageColumn = projectColumns.some((column) => column.name === 'image_url')
+  if (!hasImageColumn) {
+    await db.exec('ALTER TABLE projects ADD COLUMN image_url TEXT')
+  }
+
   const { count } = await db.get('SELECT COUNT(*) AS count FROM projects')
   if (!count) {
     const stmt = await db.prepare(`
       INSERT INTO projects (
-        date, name, type, summary, live_url, source_url, demo_mode, demo_game, demo_path, demo_url
-      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        date, name, type, summary, image_url, live_url, source_url, demo_mode, demo_game, demo_path, demo_url
+      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
     `)
 
     try {
@@ -73,6 +82,7 @@ export async function createDatabase(options = {}) {
           normalized.name,
           normalized.type,
           normalized.summary,
+          normalized.imageUrl,
           normalized.liveUrl,
           normalized.sourceUrl,
           normalized.demoMode,
@@ -86,6 +96,24 @@ export async function createDatabase(options = {}) {
     }
   }
 
+  // Backfill local screenshots for already-seeded rows missing image_url.
+  const backfillStmt = await db.prepare(
+    'UPDATE projects SET image_url = ? WHERE name = ? AND (image_url IS NULL OR image_url = "")'
+  )
+
+  try {
+    for (const project of defaultProjects) {
+      const normalized = toDbProject(project)
+      if (!normalized.imageUrl) {
+        continue
+      }
+
+      await backfillStmt.run(normalized.imageUrl, normalized.name)
+    }
+  } finally {
+    await backfillStmt.finalize()
+  }
+
   return db
 }
 
@@ -96,6 +124,7 @@ export function mapProjectRow(row) {
     name: row.name,
     type: row.type,
     summary: row.summary,
+    image: row.image_url,
     links: {
       live: row.live_url,
       source: row.source_url,

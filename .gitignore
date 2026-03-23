@@ -23,6 +23,6 @@ dist-ssr
 *.sln
 *.sw?
 
-# Ignore generated/static documents in /public/files, keep the CV
-public/files/*
-!public/files/CV-DEV-25.pdf
+# # Ignore generated/static documents in /public/files, keep the CV
+# public/files/*
+# !public/files/CV-DEV-25.pdf

@@ -22,6 +22,29 @@ export const themes = [
   },
 ]
 
+export const layoutThemes = [
+  {
+    id: 'editorial',
+    name: 'Editorial Core',
+    description: 'Version editoriale equilibree pour la lecture longue et les transitions fluides.',
+    sourceFiles: ['stitch.html', 'Stitch-2.html'],
+  },
+  {
+    id: 'cyber-brute',
+    name: 'Cyber Brute',
+    description:
+      'Interface terminale cyber: top bar fixe, side nav desktop, stats bento et sections style system monitor.',
+    sourceFiles: ['Stitch-3.html', 'Stitch-3-Mobile.html'],
+  },
+  {
+    id: 'iron-code',
+    name: 'Iron Code',
+    description:
+      'The Digital Blacksmith: UI industrielle forgée, typographie massive, palette charbon & métal en fusion.',
+    sourceFiles: ['IronCode/code.html'],
+  },
+]
+
 export const metrics = [
   { value: '2025', label: 'Diplome DWWM obtenu' },
   { value: '6+', label: 'Experiences professionnelles' },
@@ -67,6 +90,7 @@ export const projects = [
     type: 'Svelte',
     summary:
       "Projet web autour de l'univers Living Soils avec un design immersif et une presentation produit soignee.",
+    image: '/images/projects/LivingSoils.png',
     links: {
       live: null,
       source: 'https://github.com/k1znoz/LivingSoils',
@@ -82,6 +106,7 @@ export const projects = [
     type: 'Svelte',
     summary:
       'Application web orientee jardinage avec parcours utilisateur fluide et interface responsive.',
+    image: '/images/projects/GrainesDeJardin.png',
     links: {
       live: 'https://graines-de-jardin.vercel.app',
       source: 'https://github.com/k1znoz/GrainesDeJardin',
@@ -97,6 +122,7 @@ export const projects = [
     type: 'Svelte',
     summary:
       'Site evenementiel avec identite visuelle sur mesure, navigation claire et deploiement Vercel.',
+    image: '/images/projects/MariageLV.png',
     links: {
       live: 'https://mariage-lv.vercel.app',
       source: 'https://github.com/k1znoz/MariageLV',
@@ -112,6 +138,7 @@ export const projects = [
     type: 'Svelte + Laravel',
     summary:
       'Projet fullstack combinant frontend Svelte et backend Laravel pour un site de coutellerie.',
+    image: '/images/projects/Coutellerie-Svelte-Sanity.png',
     links: {
       live: 'https://coutellerie-frontend.vercel.app',
       source: 'https://github.com/k1znoz/Coutellerie-svelte-laravel',

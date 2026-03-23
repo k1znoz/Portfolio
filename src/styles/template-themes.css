@@ -1,0 +1,75 @@
+.portfolio-shell.layout-editorial .portfolio-inner {
+  max-width: 106rem;
+  gap: 1.15rem;
+}
+
+.portfolio-shell.layout-editorial .panel {
+  border-radius: 14px;
+}
+
+.portfolio-shell.layout-editorial .hero-section {
+  grid-column: 1 / -1;
+  min-height: clamp(22rem, 62vh, 44rem);
+  display: grid;
+  align-content: center;
+}
+
+.portfolio-shell.layout-editorial .metrics-panel {
+  grid-column: 1 / -1;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.portfolio-shell.layout-editorial .projects-section {
+  grid-column: 1 / -1;
+}
+
+.portfolio-shell.layout-editorial .about-section {
+  grid-column: 1 / -1;
+  grid-template-columns: 1fr;
+}
+
+.portfolio-shell.layout-cyber-brute .portfolio-inner {
+  max-width: 104rem;
+}
+
+.portfolio-shell.layout-cyber-brute .hero-section {
+  grid-column: 1 / span 7;
+}
+
+.portfolio-shell.layout-cyber-brute .metrics-panel {
+  grid-column: 8 / span 5;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.portfolio-shell.layout-cyber-brute .metrics-panel .metric-card:last-child {
+  grid-column: 1 / -1;
+}
+
+.portfolio-shell.layout-cyber-brute .projects-section,
+.portfolio-shell.layout-cyber-brute .cv-showcase,
+.portfolio-shell.layout-cyber-brute .contact-section {
+  grid-column: 1 / -1;
+}
+
+.portfolio-shell.layout-cyber-brute .about-section {
+  grid-column: 1 / -1;
+  grid-template-columns: 1fr 1fr;
+  align-items: start;
+}
+
+.portfolio-shell.layout-cyber-brute .about-grid {
+  grid-template-columns: 1fr;
+}
+
+@media (max-width: 1024px) {
+  .portfolio-shell.layout-editorial .metrics-panel,
+  .portfolio-shell.layout-cyber-brute .metrics-panel,
+  .portfolio-shell.layout-cyber-brute .about-section {
+    grid-template-columns: 1fr;
+  }
+
+  .portfolio-shell.layout-cyber-brute .hero-section,
+  .portfolio-shell.layout-cyber-brute .metrics-panel {
+    grid-column: 1 / -1;
+  }
+}

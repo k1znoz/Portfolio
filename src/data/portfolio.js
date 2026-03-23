@@ -43,6 +43,13 @@ export const layoutThemes = [
       'The Digital Blacksmith: UI industrielle forgée, typographie massive, palette charbon & métal en fusion.',
     sourceFiles: ['IronCode/code.html'],
   },
+  {
+    id: 'glass-morphism',
+    name: 'Glass Morphism',
+    description:
+      'The Obsidian Lens: couches de verre translucides, halos cyan/violet et mise en page editoriale contrastee.',
+    sourceFiles: ['GlassMorphism/code.html'],
+  },
 ]
 
 export const metrics = [

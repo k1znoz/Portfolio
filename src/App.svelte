@@ -5,6 +5,7 @@
   import ContactSection from './components/ContactSection.svelte'
   import CvPage from './components/CvPage.svelte'
   import CvShowcase from './components/CvShowcase.svelte'
+  import EditorialSideBubbleNav from './components/EditorialSideBubbleNav.svelte'
   import GamePage from './components/GamePage.svelte'
   import AdminPage from './components/AdminPage.svelte'
   import HeroSection from './components/HeroSection.svelte'
@@ -29,6 +30,14 @@
   import IronTimeline from './components/ThemeIronCode/Timeline.svelte'
   import IronContactForge from './components/ThemeIronCode/ContactForge.svelte'
   import IronFooter from './components/ThemeIronCode/Footer.svelte'
+  import GlassTopNavBar from './components/ThemeGlassMorphism/TopNavBar.svelte'
+  import GlassHero from './components/ThemeGlassMorphism/Hero.svelte'
+  import GlassStatsStrip from './components/ThemeGlassMorphism/StatsStrip.svelte'
+  import GlassProjectGrid from './components/ThemeGlassMorphism/ProjectGrid.svelte'
+  import GlassCvPanel from './components/ThemeGlassMorphism/CvPanel.svelte'
+  import GlassAboutSkills from './components/ThemeGlassMorphism/AboutSkills.svelte'
+  import GlassContactForm from './components/ThemeGlassMorphism/ContactForm.svelte'
+  import GlassFooter from './components/ThemeGlassMorphism/Footer.svelte'
   import GlitchTransitionOverlay from './components/GlitchTransitionOverlay.svelte'
   import { fetchProjects } from './lib/api-client'
   import {
@@ -117,6 +126,7 @@
   $: isRoutedPage = isCvPage || isGamePage || isAdminPage
   $: isCyberBruteLayout = !isRoutedPage && currentLayoutTheme.id === 'cyber-brute'
   $: isIronCodeLayout   = !isRoutedPage && currentLayoutTheme.id === 'iron-code'
+  $: isGlassMorphismLayout = !isRoutedPage && currentLayoutTheme.id === 'glass-morphism'
   $: githubProfileLink =
     contactLinks.find((link) => link.label.toLowerCase().includes('github'))?.href ??
     'https://github.com/k1znoz'
@@ -291,8 +301,8 @@
       requestAmbientMotionUpdate()
     }
 
-    const onCyberAnchorClick = (event) => {
-      if (!isCyberBruteLayout && !isIronCodeLayout) {
+    const onLayoutAnchorClick = (event) => {
+      if (!isCyberBruteLayout && !isIronCodeLayout && !isGlassMorphismLayout) {
         return
       }
 
@@ -344,7 +354,7 @@
     window.addEventListener('scroll', requestAmbientMotionUpdate, { passive: true })
     window.addEventListener('resize', requestAmbientMotionUpdate)
     window.addEventListener('pointermove', onPointerMove, { passive: true })
-    window.addEventListener('click', onCyberAnchorClick)
+    window.addEventListener('click', onLayoutAnchorClick)
     window.addEventListener('pointerdown', onGlobalPointerDown)
     window.addEventListener('keydown', onGlobalKeyDown)
     reduceMotionQuery.addEventListener('change', onMotionPreferenceChange)
@@ -354,7 +364,7 @@
       window.removeEventListener('scroll', requestAmbientMotionUpdate)
       window.removeEventListener('resize', requestAmbientMotionUpdate)
       window.removeEventListener('pointermove', onPointerMove)
-      window.removeEventListener('click', onCyberAnchorClick)
+      window.removeEventListener('click', onLayoutAnchorClick)
       window.removeEventListener('pointerdown', onGlobalPointerDown)
       window.removeEventListener('keydown', onGlobalKeyDown)
       reduceMotionQuery.removeEventListener('change', onMotionPreferenceChange)
@@ -385,6 +395,17 @@
     window.scrollTo({ top: 0, behavior: 'smooth' })
   }
 
+  function scrollToSection(sectionId) {
+    if (typeof document === 'undefined') {
+      return
+    }
+
+    document.getElementById(sectionId)?.scrollIntoView({
+      behavior: 'smooth',
+      block: 'start',
+    })
+  }
+
   function nextTheme() {
     if (isSwitching) return
 
@@ -394,7 +415,7 @@
         glitchMode = 'theme'
         glitchTrigger += 1
         themeIndex = (themeIndex - 1 + themes.length) % themes.length
-         switchCount += 1
+        switchCount += 1
       },
       ['theme']
     )
@@ -461,7 +482,7 @@
 </script>
 
 <main
-  class={`portfolio-shell theme-${currentTheme.id} layout-${currentLayoutTheme.id} ${isCyberBruteLayout ? 'is-cyber-brute' : ''} ${isIronCodeLayout ? 'is-iron-code' : ''} ${isSwitching || isLayoutSwitching ? 'is-switching' : ''} ${isSwitching ? 'is-theme-switching' : ''} ${isLayoutSwitching ? 'is-layout-switching' : ''}`}
+  class={`portfolio-shell theme-${currentTheme.id} layout-${currentLayoutTheme.id} ${isCyberBruteLayout ? 'is-cyber-brute' : ''} ${isIronCodeLayout ? 'is-iron-code' : ''} ${isGlassMorphismLayout ? 'is-glass-morphism' : ''} ${isSwitching || isLayoutSwitching ? 'is-switching' : ''} ${isSwitching ? 'is-theme-switching' : ''} ${isLayoutSwitching ? 'is-layout-switching' : ''}`}
   style={`--drift-x:${motion.x};--drift-y:${motion.y};--drift-r:${motion.r};--scroll-progress:${scrollProgress}%;--parallax-offset:${parallaxOffset}px;--cursor-x:${cursorX}%;--cursor-y:${cursorY}%;`}
 >
   <div class="scroll-progress" aria-hidden="true"></div>
@@ -547,11 +568,9 @@
     <TopAppBar
       ownerName={ownerName}
       githubUrl={githubProfileLink}
+      cvFileUrl={cvProfile.fileUrl}
       showLayoutToggle={false}
-      onJumpProjects={() => {
-        if (typeof document === 'undefined') return
-        document.getElementById('projects')?.scrollIntoView({ behavior: 'smooth', block: 'start' })
-      }}
+      onJumpProjects={() => scrollToSection('projects')}
       onSwitchToBaseLayout={() => selectLayoutTheme('editorial')}
     />
     <SideNavBar cvFileUrl={cvProfile.fileUrl} />
@@ -561,8 +580,8 @@
         title={runtimeCvWeb.title}
         pitch={runtimeCvWeb.pitch}
       />
-      <StatsBento {metrics} />
       <ProjectGrid projects={runtimeProjects} />
+      <StatsBento {metrics} />
       <ProcessSection experiences={runtimeCvWeb.experiences} />
       <ContactTerminal {contactLinks} />
     </div>
@@ -577,10 +596,7 @@
     <!-- ── IronCode layout ─────────────────────────────────────────────── -->
     <IronTopAppBar
       showLayoutToggle={false}
-      onHireClick={() => {
-        if (typeof document === 'undefined') return
-        document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth', block: 'start' })
-      }}
+      onHireClick={() => scrollToSection('contact')}
       onSwitchToBaseLayout={() => selectLayoutTheme('editorial')}
     />
     <div class="iron-code-main pt-20 min-h-screen bg-[#131313] text-on-surface overflow-x-hidden selection:bg-primary-container selection:text-on-primary-container">
@@ -588,10 +604,7 @@
         fullName={runtimeCvWeb.fullName}
         title={runtimeCvWeb.title}
         pitch={runtimeCvWeb.pitch}
-        onContactClick={() => {
-          if (typeof document === 'undefined') return
-          document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth', block: 'start' })
-        }}
+        onContactClick={() => scrollToSection('contact')}
       />
       <IronStatsBar {metrics} />
       <IronProjectGrid projects={runtimeProjects} />
@@ -600,8 +613,38 @@
       <IronContactForge />
     </div>
     <IronFooter {ownerName} {currentYear} {contactLinks} />
+  {:else if isGlassMorphismLayout}
+    <div class="glass-main">
+      <GlassTopNavBar
+        {ownerName}
+        onContactClick={() => scrollToSection('contact')}
+      />
+      <div class="glass-main__inner">
+        <GlassHero
+          title={runtimeCvWeb.title}
+          pitch={runtimeCvWeb.pitch}
+          heroImage={runtimeProjects.find((project) => project.image)?.image ?? cvWeb.media?.portrait}
+          stackLabel={stackSummary}
+          onOpenProjects={() => scrollToSection('projects')}
+          onOpenContact={() => scrollToSection('contact')}
+        />
+        <GlassStatsStrip {metrics} />
+        <GlassProjectGrid projects={runtimeProjects} />
+        <GlassCvPanel
+          cvFileUrl={cvProfile.fileUrl}
+          onOpenCvPage={() => navigateTo('/cv')}
+        />
+        <GlassAboutSkills experiences={runtimeCvWeb.experiences} />
+        <GlassContactForm />
+      </div>
+      <GlassFooter {ownerName} {currentYear} {contactLinks} />
+    </div>
   {:else}
     <div class="portfolio-inner">
+      {#if !isRoutedPage && currentLayoutTheme.id === 'editorial'}
+        <EditorialSideBubbleNav />
+      {/if}
+
       <TopNav
         {ownerName}
         {themes}

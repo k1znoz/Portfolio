@@ -1,6 +1,9 @@
 <script>
+  import { onMount } from 'svelte'
+  import { createHashSectionWatcher } from '../../lib/menu-state'
+
   // Current active section anchor (used to highlight active nav link)
-  export let activeSection = 'forge'
+  export let activeSection = 'hero'
 
   // Callback to smoothly scroll to a contact section / open contact
   export let onHireClick = () => {}
@@ -10,11 +13,22 @@
   export let showLayoutToggle = true
 
   const navItems = [
-    { id: 'forge',     label: 'FORGE',      href: '#hero' },
-    { id: 'arsenal',   label: 'ARSENAL',    href: '#projects' },
-    { id: 'grades',    label: 'BLUEPRINTS', href: '#skills' },
-    { id: 'records',   label: 'RECORDS',    href: '#timeline' },
+    { id: 'hero', label: 'FORGE', href: '#hero' },
+    { id: 'projects', label: 'ARSENAL', href: '#projects' },
+    { id: 'skills', label: 'BLUEPRINTS', href: '#skills' },
+    { id: 'timeline', label: 'RECORDS', href: '#timeline' },
   ]
+
+  onMount(() => {
+    return createHashSectionWatcher({
+      windowRef: window,
+      validSectionIds: navItems.map((item) => item.id),
+      fallbackSectionId: 'hero',
+      onSectionChange: (nextSection) => {
+        activeSection = nextSection
+      },
+    })
+  })
 </script>
 
 <header class="iron-topbar">

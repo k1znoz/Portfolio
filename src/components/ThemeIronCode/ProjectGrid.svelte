@@ -1,4 +1,6 @@
 <script>
+  import { sortProjectsByDisplayOrder } from '../../lib/project-order'
+
   // Array of project objects from portfolio.js
   export let projects = []
 
@@ -14,36 +16,9 @@
     return type.split(/[+\s]/)[0] ?? 'WEB'
   }
 
-  // Shared visual order across themes.
-  const PROJECT_DISPLAY_ORDER = [
-    'Coutellerie-svelte-laravel',
-    'MariageLV',
-    'GrainesDeJardin',
-    'LivingSoils',
-  ]
-
-  function getProjectOrderIndex(projectName) {
-    const index = PROJECT_DISPLAY_ORDER.indexOf(projectName)
-    return index === -1 ? Number.MAX_SAFE_INTEGER : index
-  }
-
-  function sortProjectsByDisplayOrder(items) {
-    return [...items].sort((a, b) => {
-      const rankA = getProjectOrderIndex(a?.name)
-      const rankB = getProjectOrderIndex(b?.name)
-
-      if (rankA !== rankB) {
-        return rankA - rankB
-      }
-
-      return String(a?.name ?? '').localeCompare(String(b?.name ?? ''))
-    })
-  }
-
-  // Prefer projects with API image, and keep a consistent ordering across themes.
+  // Keep a consistent ordering across themes and render all projects.
   $: orderedProjects = sortProjectsByDisplayOrder(projects)
-  $: screenshotProjects = orderedProjects.filter((project) => Boolean(project.image))
-  $: cards = (screenshotProjects.length >= 4 ? screenshotProjects : orderedProjects).slice(0, 4)
+  $: cards = orderedProjects
 
   // Track images that failed to load so we can reactively show the placeholder
   let failedImages = new Set()

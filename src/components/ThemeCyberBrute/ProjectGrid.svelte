@@ -1,4 +1,6 @@
 <script>
+    import { sortProjectsByDisplayOrder } from '../../lib/project-order'
+
     export let projects = []
 
     function makeTags(project) {
@@ -8,36 +10,9 @@
         return [typeTag, modeTag, codeTag]
     }
 
-    // Shared visual order across themes.
-    const PROJECT_DISPLAY_ORDER = [
-        'Coutellerie-svelte-laravel',
-        'MariageLV',
-        'GrainesDeJardin',
-        'LivingSoils',
-    ]
-
-    function getProjectOrderIndex(projectName) {
-        const index = PROJECT_DISPLAY_ORDER.indexOf(projectName)
-        return index === -1 ? Number.MAX_SAFE_INTEGER : index
-    }
-
-    function sortProjectsByDisplayOrder(items) {
-        return [...items].sort((a, b) => {
-            const rankA = getProjectOrderIndex(a?.name)
-            const rankB = getProjectOrderIndex(b?.name)
-
-            if (rankA !== rankB) {
-                return rankA - rankB
-            }
-
-            return String(a?.name ?? '').localeCompare(String(b?.name ?? ''))
-        })
-    }
-
-    // Prefer cards that already have an API image, with consistent ordering across themes.
+    // Keep a consistent ordering across themes and render all projects.
     $: orderedProjects = sortProjectsByDisplayOrder(projects)
-    $: imageCards = orderedProjects.filter((project) => Boolean(project.image))
-    $: cards = (imageCards.length >= 3 ? imageCards : orderedProjects).slice(0, 3)
+    $: cards = orderedProjects
 
     let failedImages = new Set()
 

@@ -105,7 +105,7 @@
     transform: scale(1.12);
   }
 
-  @media (max-width: 980px) {
+  @media (max-width: 1024px) {
     .editorial-side-bubbles {
       display: none;
     }

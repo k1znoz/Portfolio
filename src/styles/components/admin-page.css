@@ -167,6 +167,12 @@
   gap: 0.9rem;
 }
 
+@media (max-width: 700px) {
+  .admin-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
 /* ─── Cards ───────────────────────────────────────────────── */
 
 .admin-card {
@@ -262,6 +268,12 @@
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 0.55rem;
+}
+
+@media (max-width: 700px) {
+  .admin-form {
+    grid-template-columns: 1fr;
+  }
 }
 
 .admin-form label {

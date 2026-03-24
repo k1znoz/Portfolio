@@ -129,7 +129,7 @@
   width: 100%;
   border: 1px solid color-mix(in srgb, var(--outline), transparent 12%);
   border-radius: 12px;
-  height: clamp(260px, 34vw, 430px);
+  height: clamp(200px, 56vw, 430px);
   background: color-mix(in srgb, var(--bg), #000 5%);
 }
 

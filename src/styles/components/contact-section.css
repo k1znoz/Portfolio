@@ -80,6 +80,7 @@
 
 .contact-links {
   display: flex;
+  flex-wrap: wrap;
   gap: 0.8rem;
   align-items: center;
   grid-column: 1 / -1;
@@ -94,5 +95,12 @@
 @media (max-width: 900px) {
   .contact-section {
     grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 560px) {
+  .contact-form button {
+    width: 100%;
+    justify-self: stretch;
   }
 }

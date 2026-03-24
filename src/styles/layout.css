@@ -167,6 +167,13 @@
   }
 }
 
+@media (max-width: 480px) {
+  .portfolio-inner {
+    grid-template-columns: 1fr;
+    padding: 0.5rem;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .scroll-progress {
     transition: none;

@@ -91,7 +91,7 @@
 
 .cv-reveal {
   display: grid;
-  grid-template-columns: minmax(280px, 0.78fr) 1.42fr;
+  grid-template-columns: minmax(min(280px, 100%), 0.78fr) 1.42fr;
   gap: 1rem;
 }
 

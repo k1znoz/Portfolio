@@ -4,6 +4,7 @@
 
   export let activeSection = 'hero'
   export let onHireClick = () => {}
+  export let onOpenAdminPage = () => {}
   export let onSwitchToBaseLayout = () => {}
   export let showLayoutToggle = true
 
@@ -66,6 +67,13 @@
         {item.label}
       </a>
     {/each}
+    <button
+      type="button"
+      class="iron-topbar__nav-link iron-topbar__nav-button"
+      on:click={onOpenAdminPage}
+    >
+      ADMIN
+    </button>
     {#if showLayoutToggle}
       <button
         type="button"
@@ -124,6 +132,16 @@
         {item.label}
       </a>
     {/each}
+    <button
+      type="button"
+      class="iron-mobile-link iron-mobile-link--button"
+      on:click={() => {
+        onOpenAdminPage()
+        closeMenu()
+      }}
+    >
+      ADMIN
+    </button>
     <button
       type="button"
       class="iron-topbar__cta iron-mobile-cta"

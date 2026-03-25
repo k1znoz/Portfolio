@@ -21,6 +21,7 @@
   import SideNavBar from './components/ThemeCyberBrute/SideNavBar.svelte'
   import StatsBento from './components/ThemeCyberBrute/StatsBento.svelte'
   import TopAppBar from './components/ThemeCyberBrute/TopAppBar.svelte'
+  import CyberAdminPage from './components/ThemeCyberBrute/AdminPage.svelte'
   // ── IronCode theme ────────────────────────────────────────────────────────
   import IronTopAppBar from './components/ThemeIronCode/TopAppBar.svelte'
   import IronHero from './components/ThemeIronCode/Hero.svelte'
@@ -30,6 +31,7 @@
   import IronTimeline from './components/ThemeIronCode/Timeline.svelte'
   import IronContactForge from './components/ThemeIronCode/ContactForge.svelte'
   import IronFooter from './components/ThemeIronCode/Footer.svelte'
+  import IronAdminPage from './components/ThemeIronCode/AdminPage.svelte'
   import GlassTopNavBar from './components/ThemeGlassMorphism/TopNavBar.svelte'
   import GlassHero from './components/ThemeGlassMorphism/Hero.svelte'
   import GlassStatsStrip from './components/ThemeGlassMorphism/StatsStrip.svelte'
@@ -38,6 +40,7 @@
   import GlassAboutSkills from './components/ThemeGlassMorphism/AboutSkills.svelte'
   import GlassContactForm from './components/ThemeGlassMorphism/ContactForm.svelte'
   import GlassFooter from './components/ThemeGlassMorphism/Footer.svelte'
+  import GlassAdminPage from './components/ThemeGlassMorphism/AdminPage.svelte'
   import GlitchTransitionOverlay from './components/GlitchTransitionOverlay.svelte'
   import { fetchProjects } from './lib/api-client'
   import {
@@ -124,6 +127,9 @@
   $: isGamePage = currentPath === '/game' || currentPath === '/tower-defense'
   $: isAdminPage = currentPath === '/admin'
   $: isRoutedPage = isCvPage || isGamePage || isAdminPage
+  $: isCyberBruteAdminLayout = isAdminPage && currentLayoutTheme.id === 'cyber-brute'
+  $: isIronCodeAdminLayout = isAdminPage && currentLayoutTheme.id === 'iron-code'
+  $: isGlassMorphismAdminLayout = isAdminPage && currentLayoutTheme.id === 'glass-morphism'
   $: isCyberBruteLayout = !isRoutedPage && currentLayoutTheme.id === 'cyber-brute'
   $: isIronCodeLayout   = !isRoutedPage && currentLayoutTheme.id === 'iron-code'
   $: isGlassMorphismLayout = !isRoutedPage && currentLayoutTheme.id === 'glass-morphism'
@@ -482,7 +488,7 @@
 </script>
 
 <main
-  class={`portfolio-shell theme-${currentTheme.id} layout-${currentLayoutTheme.id} ${isCyberBruteLayout ? 'is-cyber-brute' : ''} ${isIronCodeLayout ? 'is-iron-code' : ''} ${isGlassMorphismLayout ? 'is-glass-morphism' : ''} ${isSwitching || isLayoutSwitching ? 'is-switching' : ''} ${isSwitching ? 'is-theme-switching' : ''} ${isLayoutSwitching ? 'is-layout-switching' : ''}`}
+  class={`portfolio-shell theme-${currentTheme.id} layout-${currentLayoutTheme.id} ${isCyberBruteLayout || isCyberBruteAdminLayout ? 'is-cyber-brute' : ''} ${isIronCodeLayout || isIronCodeAdminLayout ? 'is-iron-code' : ''} ${isGlassMorphismLayout || isGlassMorphismAdminLayout ? 'is-glass-morphism' : ''} ${isSwitching || isLayoutSwitching ? 'is-switching' : ''} ${isSwitching ? 'is-theme-switching' : ''} ${isLayoutSwitching ? 'is-layout-switching' : ''}`}
   style={`--drift-x:${motion.x};--drift-y:${motion.y};--drift-r:${motion.r};--scroll-progress:${scrollProgress}%;--parallax-offset:${parallaxOffset}px;--cursor-x:${cursorX}%;--cursor-y:${cursorY}%;`}
 >
   <div class="scroll-progress" aria-hidden="true"></div>
@@ -564,13 +570,19 @@
     </aside>
   {/if}
 
-  {#if isCyberBruteLayout}
+  {#if isCyberBruteAdminLayout}
+    <CyberAdminPage
+      onOpenHomePage={() => navigateTo('/')}
+      onProjectsUpdated={refreshProjects}
+    />
+  {:else if isCyberBruteLayout}
     <TopAppBar
       ownerName={ownerName}
       githubUrl={githubProfileLink}
       cvFileUrl={cvProfile.fileUrl}
       showLayoutToggle={false}
       onJumpProjects={() => scrollToSection('projects')}
+      onOpenAdminPage={() => navigateTo('/admin')}
       onSwitchToBaseLayout={() => selectLayoutTheme('editorial')}
     />
     <SideNavBar cvFileUrl={cvProfile.fileUrl} />
@@ -592,11 +604,17 @@
       stackLabel={stackSummary}
       location={locationSummary}
     />
+  {:else if isIronCodeAdminLayout}
+    <IronAdminPage
+      onOpenHomePage={() => navigateTo('/')}
+      onProjectsUpdated={refreshProjects}
+    />
   {:else if isIronCodeLayout}
     <!-- ── IronCode layout ─────────────────────────────────────────────── -->
     <IronTopAppBar
       showLayoutToggle={false}
       onHireClick={() => scrollToSection('contact')}
+      onOpenAdminPage={() => navigateTo('/admin')}
       onSwitchToBaseLayout={() => selectLayoutTheme('editorial')}
     />
     <div class="iron-code-main pt-20 min-h-screen bg-[#131313] text-on-surface overflow-x-hidden selection:bg-primary-container selection:text-on-primary-container">
@@ -613,11 +631,17 @@
       <IronContactForge />
     </div>
     <IronFooter {ownerName} {currentYear} {contactLinks} />
+  {:else if isGlassMorphismAdminLayout}
+    <GlassAdminPage
+      onOpenHomePage={() => navigateTo('/')}
+      onProjectsUpdated={refreshProjects}
+    />
   {:else if isGlassMorphismLayout}
     <div class="glass-main">
       <GlassTopNavBar
         {ownerName}
         onContactClick={() => scrollToSection('contact')}
+        onOpenAdminPage={() => navigateTo('/admin')}
       />
       <div class="glass-main__inner">
         <GlassHero

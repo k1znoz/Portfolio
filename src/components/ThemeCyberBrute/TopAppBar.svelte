@@ -6,6 +6,7 @@
 	export let ownerName = 'k1znoz'
 	export let githubUrl = 'https://github.com/k1znoz'
 	export let cvFileUrl = '/files/CV-DEV-25.pdf'
+	export let onOpenAdminPage = () => {}
 	export let onJumpProjects = () => {}
 	export let onSwitchToBaseLayout = () => {}
 	export let showLayoutToggle = true
@@ -48,6 +49,13 @@
 			</a>
 		{/each}
 		<a class="font-['Space_Grotesk'] uppercase tracking-tighter font-bold text-[#e2e2e2] hover:bg-[#1f1f1f] hover:text-[#ff8f73] transition-none" href={cvFileUrl} target="_blank" rel="noreferrer">CV</a>
+		<button
+			type="button"
+			class="font-['Space_Grotesk'] uppercase tracking-tighter font-bold text-[#e2e2e2] bg-transparent border-0 hover:bg-[#1f1f1f] hover:text-[#ff8f73] transition-none"
+			on:click={onOpenAdminPage}
+		>
+			ADMIN
+		</button>
 	</nav>
 
 	<!-- Actions desktop + burger mobile -->
@@ -123,6 +131,13 @@
 			<a href={cvFileUrl} target="_blank" rel="noreferrer" class="cyber-mobile-link" on:click={closeMenu}>
 				<span class="cyber-mobile-prompt">_</span>CV.PDF
 			</a>
+			<button
+				type="button"
+				class="cyber-mobile-link w-full text-left"
+				on:click={() => { onOpenAdminPage(); closeMenu() }}
+			>
+				<span class="cyber-mobile-prompt">_</span>ADMIN
+			</button>
 			<div class="border-t border-[#1f1f1f] flex items-center gap-1 px-4 py-2">
 				<button type="button" class="p-2 hover:bg-[#1f1f1f] text-[#ff8f73]" on:click={() => { onJumpProjects(); closeMenu() }} aria-label="Terminal">
 					<span class="material-symbols-outlined text-base" data-icon="terminal">terminal</span>

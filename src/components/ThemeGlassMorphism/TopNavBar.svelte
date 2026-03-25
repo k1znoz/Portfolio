@@ -4,6 +4,7 @@
 
   export let ownerName = 'k1znoz'
   export let onContactClick = () => {}
+  export let onOpenAdminPage = () => {}
 
   let currentSection = 'projects'
   let menuOpen = false
@@ -70,6 +71,12 @@
           {item.label}
         </a>
       {/each}
+      <a
+        href="/admin"
+        on:click|preventDefault={onOpenAdminPage}
+      >
+        Admin
+      </a>
     </div>
 
     <!-- CTA desktop -->
@@ -108,6 +115,16 @@
           {item.label}
         </a>
       {/each}
+      <a
+        href="/admin"
+        class="gm-mobile-link"
+        on:click|preventDefault={() => {
+          onOpenAdminPage()
+          menuOpen = false
+        }}
+      >
+        Admin
+      </a>
       <button
         type="button"
         class="gm-top-nav__cta gm-mobile-cta"
